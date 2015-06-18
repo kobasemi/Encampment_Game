@@ -5,3 +5,4 @@
 [酒井亮佑](https://github.com/sakaway)
 [上原拓也](https://github.com/uehrtky38)
 [藤木英](https://github.com/k532888)
+[後藤勇介](https://github.com/GOTOU)
