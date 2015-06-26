@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Encampment Game by AI</title>
+<style>
+#BackGround {
+	position: absolute; top: 0px; left: 0px; z-index: 0;
+}
+#Color_Field {
+	position: absolute; top: 0px; left: 0px; z-index: 1;
+}
+#Event_Field {
+	position: absolute; top: 0px; left: 0px; z-index: 2;
+}
+#AI_Field {
+	position: absolute; top: 0px; left: 0px; z-index: 3;
+}
+</style>
+
+<script>
+	var createjs = window;
+</script>
+<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
+<script src="https://code.createjs.com/tweenjs-0.6.1.min.js"></script>
+<script>
+	/* 背景の描画関数 */
+	function drawBackGround() {
+		var cnvs = document.getElementById("BackGround");
+		var ctx = cnvs.getContext("2d");
+		var img = new Image();
+		img.src = "field.png";
+		img.onload = function() {
+			ctx.drawImage(img, 0, 0, 572, 624);
+		}
+	}
+
+	/* 色々準備関数 */
+	function initialize() {
+		var i; //カウント用
+		$.ajaxSetup({ async : false});
+		$.getJSON("json/AI.json", function(data) { AI_Log = data; }); //json拾ってくる処理
+		$.getJSON("json/Event.json", function(data) { Event_Log = data; });
+		$.ajaxSetup({ async : true });
+
+		var AICanvas = document.getElementById("AI_Field"); //AI描画キャンバスの宣言
+		stage = new Stage(AICanvas);
+		var ColorCanvas = document.getElementById("Color_Field"); //色描画キャンバスの宣言
+		colx = ColorCanvas.getContext("2d");
+		for(i=0;i<AI_num;i++){ AI[i] = new Shape(); stage.addChild(AI[i]); }
+		Ticker.addEventListener("tick", function(){ stage.update(); });
+		for(i=0;i<AI_num;i++){ //AIの初期座標の指定と描画
+			AI[i].x = 39.5+(26*AI_Log[0][i][0]); //x座標
+			AI[i].y = 66+(26*AI_Log[0][i][1]); //y座標
+			draw(AI[i].graphics); //描画
+		}
+		alert(stage);
+	}
+
+	/* AIの描画関数 */
+	function draw(myGraphics) {
+		myGraphics.beginStroke("black");
+		myGraphics.drawPolyStar(0, 0, 11, 5, 0.6, -90);
+		stage.update();
+	}
+
+</script>
+</head>
+
+<body onload="drawBackGround();initialize();">
+	<script>
+		var AI_Log; //AI情報配列
+		var Event_log; //マップイベント情報配列
+		var Obst_Log; //障害物情報配列
+		var stage; //EaselJSのStageオブジェクト
+		var colx; //Color_Fieldのコンテキスト
+		var AI = new Array(8); //AIのオブジェクト
+		var AI_num = 4; //AIの数を格納
+	</script>
+
+	<canvas id="BackGround" width="572" height="624"></canvas>
+	<canvas id="Color_Field" width="572" height="624"></canvas>
+	<canvas id="Event_Field" width="572" height="624"></canvas>
+	<canvas id="AI_Field" width="572" height="624"></canvas>
+</body>
+</html>
