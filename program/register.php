@@ -1,5 +1,5 @@
 <?php
-  /* ÉtÉHÅ[ÉÄÇ©ÇÁÉÅÅ[ÉãÉAÉhÉåÉXÇéÊìæ */
+  /* „Éï„Ç©„Éº„É†„Åã„Çâ„É°„Éº„É´„Ç¢„Éâ„É¨„Çπ„ÇíÂèñÂæó */
 $email = $_POST["email"];
 $password = $_POST["password"];
 $username = $_POST["username"];
@@ -7,14 +7,14 @@ $username = $_POST["username"];
 $email = mysql_escape_string($email);
 $dirname = mysql_escape_string("/home/".$username);
 
-$lastdate = (int)date("Ymd");
+$lastdate = (int)date("YmdGis");
 
 
 
-/* ÉGÉâÅ[ÉÅÉbÉZÅ[ÉWîzóÒ */
+/* „Ç®„É©„Éº„É°„ÉÉ„Çª„Éº„Ç∏ÈÖçÂàó */
 $error = array();
 
-/* ÉfÅ[É^ÉxÅ[ÉXÇ…ê⁄ë± */
+/* „Éá„Éº„Çø„Éô„Éº„Çπ„Å´Êé•Á∂ö */
 //require_once("db.php");
 
 
@@ -51,9 +51,9 @@ if($email == "" || $password == "" || $username == "") {
   $result = $mysqli->query("SELECT MAX(num) as max  FROM all_users");
   $maxnum = 0;
   if($result){
- //1çsÇ∏Ç¬éÊÇËèoÇµ
+ //1Ë°å„Åö„Å§Âèñ„ÇäÂá∫„Åó
     while($row = $result->fetch_object()){
-      //ÉGÉXÉPÅ[ÉvÇµÇƒï\é¶
+      //„Ç®„Çπ„Ç±„Éº„Éó„Åó„Å¶Ë°®Á§∫
       $num = $row->max;
       $maxnum = $num+1;
     }
@@ -74,7 +74,7 @@ if(count($error) > 0) {
 <table>
   <caption>Error</caption>
   <tr>
-    <td class="item">ErrorÅF</td>
+    <td class="item">ErrorÔºö</td>
       <td><?php print $value; ?></td>
   </tr>
 </table>
@@ -82,7 +82,7 @@ if(count($error) > 0) {
                                     }
 } else {
 
-  echo "ìoò^äÆóπ";
+  echo "ÁôªÈå≤ÂÆå‰∫Ü";
 
 }
 ?>
