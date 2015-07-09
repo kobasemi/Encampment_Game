@@ -9,7 +9,7 @@ public class   AI {
 	//定数(一部例外あり)
 		public final int GRID_X=20;//グリッドの大きさx
 		public final int GRID_Y=20;//グリッドの大きさy
-		public int ENEMY_NUM=2;//敵の数(開始時に決定)(実は変数)
+		public int ENEMY_NUM=1;//敵の数(開始時に決定)(実は変数)
 		public final int UNDER=0;
 		public final int UP=1;
 		public final int RIGHT=2;
@@ -32,15 +32,15 @@ public class   AI {
 		public final int MATCHLESS=3;//無敵
 		
 	//変数
-	public int x=0;//自分の位置x
-	public int y=0;//自分の位置y
-	public int my_color_num=0;//自分が塗りつぶしたマスの数
-	public int[] enemy_color_num=new int[10]; //敵が塗りつぶしたマスの数→わからない・・・とりあえず多めに10
-	public int my_status=0;//自分のステータス
-	public int[] neighbor_object=new int[5]; //オブジェクトデータ
-	public int[] neighbor_color=new int[5]; //色データ
-	public int[] neighbor_status=new int[5];//ステータスデータ
-	public int way=0;//次に自分の進む方向
+	public int player_num = 2;
+	public int[] player_x=new int[player_num+1]; //位置x
+	public int[] player_y=new int[player_num+1]; //位置y
+	public int[] player_color_num=new int[player_num+1]; //゙塗りつぶしたマスの数
+	public int[] player_way=new int[player_num+1]; //方向
+	public int player_status=0; //ステータス
+	public int[][] object_map=new int[GRID_X][GRID_Y]; //オブジェクトデータ
+	public int[][] color_map=new int[GRID_X][GRID_Y]; //色データ
+
 	public int event_x=0;//イベントマスの位置x
 	public int event_y=0;//イベントマスの位置y
 	
@@ -74,45 +74,46 @@ public class   AI {
 	}
 	
 	public int get_way(){//行き先の値を渡す
-		return way;
+		return player_way[PLAYER];
 	}
 
-	public void set_neighbor_data(int data[]){//周辺のマップ情報をもらう
-		neighbor_object[UP]=data[UP];
-		neighbor_object[RIGHT]=data[RIGHT];
-		neighbor_object[DOWN]=data[DOWN];
-		neighbor_object[LEFT]=data[LEFT];
+	public void set_object_map(int data[][]){//オブジェクトマップ情報をもらう
+		for (int i = 0; i < object_map.length; i++) {
+			for (int j = 0; j < object_map[i].length; j++) {
+				object_map[i][j]=data[i][j];
+			}
+		}
 	}
 
-	public void set_neighbor_color(int data[]){//周辺の色情報をもらう
-		neighbor_color[UP]=data[UP];
-		neighbor_color[RIGHT]=data[RIGHT];
-		neighbor_color[DOWN]=data[DOWN];
-		neighbor_color[LEFT]=data[LEFT];
-	}
-	
-	public void set_neighbor_status(int data[]){//周辺のステータス情報をもらう
-		neighbor_status[UP]=data[UP];
-		neighbor_status[RIGHT]=data[RIGHT];
-		neighbor_status[DOWN]=data[DOWN];
-		neighbor_status[LEFT]=data[LEFT];
-	}
-	
-	public void set_grid_color(int color[]){//自分の色数と敵の色数をもらう
-		for(int i=1,j=0;i<color.length;i++){
-			if(i==PLAYER){
-				my_color_num=color[i];
-			}else{
-				enemy_color_num[j]=color[i];
-				j++;
+	public void set_color_map(int data[][]){//色マップ情報をもらう
+		for (int i = 0; i < color_map.length; i++) {
+			for (int j = 0; j < color_map[i].length; j++) {
+				color_map[i][j]=data[i][j];
 			}
 		}
 	}
 	
-	public void set_my_data(int data_x,int data_y,int status){//自分の位置情報とステータス情報をもらう
-		x=data_x;
-		y=data_y;
-		my_status=status;
+	public void set_status(int data){//ステータス情報をもらう
+			player_status=data;		
+	}
+	
+	public void set_way(int data[]){//方向情報をもらう
+		for(int i=0;i<player_num;i++){
+			player_way[i]=data[i];		
+		}
+	}
+	
+	public void set_color(int data[]){//自分の色数と敵の色数をもらう
+		for(int i=0;i<player_num;i++){
+			player_color_num[i]=data[i];		
+		}
+	}
+	
+	public void set_position_data(int data_x[],int data_y[]){//位置情報をもらう
+		for(int i=0;i<player_num;i++){
+			player_x[i]=data_x[i];		
+			player_y[i]=data_y[i];		
+		}
 	}
 	
 	public void set_event_data(int x,int y){//イベントマスの位置をもらう
@@ -123,38 +124,29 @@ public class   AI {
 
 	//処理
 	public void action(){//AIの処理を書く (以下はランダム移動の例)
-		int walk_ran =0 ;
-		int check=0;
+		int walk_ran =UP;
 		walk_ran=rnd.nextInt(4)+1;
-		while(neighbor_object[walk_ran]<0&&check<30){//30回で適切な値が出なければ,１ターン停止
-			check++;
-			walk_ran=rnd.nextInt(4)+1;
-		}
 
-		//移動処理
-		if(check>=30){
-			way=UNDER;
-		}
 		//上
-		else if(walk_ran==UP){
-			way=UP;
+		if(walk_ran==UP){
+			player_way[PLAYER]=UP;
 		}
 		//下
 		else if(walk_ran==DOWN){
-			way=DOWN;
+			player_way[PLAYER]=DOWN;
 		}
 		//左
 		else if(walk_ran==LEFT){
-			way=LEFT;
+			player_way[PLAYER]=LEFT;
 		}
 		//右
 		else if(walk_ran==RIGHT){
-			way=RIGHT;
+			player_way[PLAYER]=RIGHT;
 		}
 	}
 	
 	public void right(){
-		way=RIGHT;
+		player_way[PLAYER]=RIGHT;
 	}
 
 }

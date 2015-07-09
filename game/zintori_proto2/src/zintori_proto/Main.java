@@ -579,23 +579,14 @@ public class Main extends Applet implements Runnable {
 	}
 
 	void color_explode(int x,int y,int color) {// xとyを中心に3マスをカラーで塗る
-		int temp_x;
-		int temp_y;
+
 		for(int i=x-3;i<x+3;i++){
-			temp_x=i;
-			if(temp_x<0){
-				temp_x=temp_x+GRID_X;
-			}else if(temp_x>=GRID_X){
-				temp_x=temp_x-GRID_X;
-			}
-			for(int j=y-3;j<y+3;j++){
-				temp_y=j;
-				if(temp_y<0){
-					temp_y=temp_y+GRID_Y;
-				}else if(temp_y>=GRID_Y){
-					temp_y=temp_y-GRID_Y;
+			if(0<=i&&i<GRID_X){
+				for(int j=y-3;j<y+3;j++){
+					if(0<=j&&j<GRID_Y){
+						color_map[i][j]=color;
+					}
 				}
-				color_map[temp_x][temp_y]=color;
 			}
 		}
 		
@@ -665,7 +656,7 @@ public class Main extends Applet implements Runnable {
 	}
 
 	void write_AI_JSON() {
-		System.out.println("終了");
+	/*	System.out.println("終了");
 		Gson gson = new Gson();
 
 		try (
@@ -685,7 +676,7 @@ public class Main extends Applet implements Runnable {
 			}
 		
 		System.out.println("終了");
-
+	 */
 	}
 
 }
