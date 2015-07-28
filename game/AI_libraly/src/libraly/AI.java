@@ -60,6 +60,8 @@ public class   AI {
 		for(int i=0,j=1;i<ENEMY.length;i++){
 			if(j!=PLAYER){
 				ENEMY[i]=j;
+			}else{
+				i--;
 			}
 			j++;
 		}
@@ -67,6 +69,8 @@ public class   AI {
 		for(int i=0,j=1;i<ENEMY_COLOR.length;i++){
 			if(j!=PLAYER){
 				ENEMY_COLOR[i]=j;
+			}else{
+				i--;
 			}
 			j++;
 		}
@@ -98,19 +102,19 @@ public class   AI {
 	}
 	
 	public void set_way(int data[]){//方向情報をもらう
-		for(int i=0;i<player_num;i++){
+		for(int i=1;i<player_num+1;i++){
 			player_way[i]=data[i];		
 		}
 	}
 	
 	public void set_color(int data[]){//自分の色数と敵の色数をもらう
-		for(int i=0;i<player_num;i++){
+		for(int i=1;i<player_num+1;i++){
 			player_color_num[i]=data[i];		
 		}
 	}
 	
-	public void set_position_data(int data_x[],int data_y[]){//位置情報をもらう
-		for(int i=0;i<player_num;i++){
+	public void set_position_data(int[] data_x,int[] data_y){//位置情報をもらう
+		for(int i=1;i<player_num+1;i++){
 			player_x[i]=data_x[i];		
 			player_y[i]=data_y[i];		
 		}

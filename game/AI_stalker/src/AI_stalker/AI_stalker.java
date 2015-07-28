@@ -1,8 +1,8 @@
-package test_AI_A;
+package AI_stalker;
 
 import libraly.AI;
 
-public class Player_A extends AI{
+public class AI_stalker extends AI{
 	/*
 	//定数(一部例外あり)
 	public final int GRID_X=20;//グリッドの大きさx
@@ -42,12 +42,25 @@ public class Player_A extends AI{
 	public int event_x=0;//イベントマスの位置x
 	public int event_y=0;//イベントマスの位置y
 */
-	public Player_A() {
+	public AI_stalker() {
 		
 	}
 
 	@Override
 	public void action(){
+		if(Math.abs(player_x[ENEMY[0]]-player_x[PLAYER])>=Math.abs(player_y[ENEMY[0]]-player_y[PLAYER])){
+			if(player_x[ENEMY[0]]>player_x[PLAYER]){
+				player_way[PLAYER]=RIGHT;
+			}else if(player_x[ENEMY[0]]<=player_x[PLAYER]){
+				player_way[PLAYER]=LEFT;
+			}
+		}else{
+			if(player_y[ENEMY[0]]>player_y[PLAYER]){
+				player_way[PLAYER]=DOWN;
+			}else if(player_y[ENEMY[0]]<=player_y[PLAYER]){
+				player_way[PLAYER]=UP;
+			}
+		}
 		
 	}
 	   

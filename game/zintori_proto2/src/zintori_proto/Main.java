@@ -86,6 +86,7 @@ public class Main extends Applet implements Runnable {
 	private int[] player_status = new int[player_num + 1];
 	private int[] player_color_num = new int[player_num + 1];
 	private int[] player_battle = new int[player_num + 1];
+	private int[] player_rival = new int[player_num + 1];
 	private boolean[] player_stop = new boolean[player_num + 1];
 	
 
@@ -100,7 +101,7 @@ public class Main extends Applet implements Runnable {
 
 	String event = "";
 	
-	int data_AI[][][]=new int[TURN+2][4][5];
+	int data_AI[][][]=new int[TURN+2][4][6];
 	int data_event[][]=new int[TURN+2][4];
 
 	int object_map[][] = { // マップ情報（プレイヤー位置等）
@@ -166,11 +167,12 @@ public class Main extends Applet implements Runnable {
 		// ////内部のクラスであれば以下のような処理はいらないが、外部jarからAIを読み込む必要があるため、若干複雑な処理が必要//////
 		try {
 			urls[0] = new URL(
-					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/test_AI_A.jar");// AIのクラスが入っているjarファイルの位置指定
+					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/AI_stalker.jar");// AIのクラスが入っているjarファイルの位置指定
 			urls[1] = new URL(
 					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/test_AI_B.jar");// AIのクラスが入っているjarファイルの位置指定
-			AI_name[1] = "test_AI_A.Player_A";// パッケージ名.クラス名
+			AI_name[1] = "AI_stalker.AI_stalker";// パッケージ名.クラス名
 			AI_name[2] = "test_AI_B.Player_B";// パッケージ名.クラス名
+			
 			ClassLoader parent = ClassLoader.getSystemClassLoader();// クラスローダ作成
 			URLClassLoader urlClassLoader = new URLClassLoader(urls, parent);// 外部jarを読み込むためのＵＲＬクラスローダ作成
 
@@ -236,22 +238,25 @@ public class Main extends Applet implements Runnable {
 				if (turn <= 500) {
 					for (int i = 1; i < player_num + 1; i++) {
 						if(player_status[i]!=MATCHLESS){
-							player_status[i]=NO;
-							event_count++;					
+							player_status[i]=NO;					
+						}else{
+							event_count++;
 						}
 						if(player_status[i]==MATCHLESS&&event_count>=20){
 							create_event();
 							player_status[i]=NO;
 						}
-						player_battle[i]=NO;
+					}
+					for (int i = 1; i < player_num + 1; i++) {
+	
 					
 						give_data(i);// 周辺のデータをプレイヤーに与える
 						action[i].invoke(myPlayer[i]);// プレイヤーのAIの思考メソッド
 						move(i);// プレイヤーA移動
+						change_map();// マップ情報変更
 						event_check(i);
 						change_map();// マップ情報変更
 						save_AI(turn+1,i);
-						
 						
 					}
 					save_event(turn+1);
@@ -259,7 +264,7 @@ public class Main extends Applet implements Runnable {
 					repaint();// 描画
 					turn++;
 					
-					Thread.sleep(100);
+					Thread.sleep(50);
 				} else {	
 					write_AI_JSON();
 					game_finish = true;
@@ -273,7 +278,6 @@ public class Main extends Applet implements Runnable {
 	// 描画更新
 	public void update(Graphics g) {
 		paint(g);
-
 	}
 
 	// 描画
@@ -371,11 +375,11 @@ public class Main extends Applet implements Runnable {
 		for (int i = 0; i < player_color_num.length; i++) {
 			player_color_num[i] = 0;
 		}
-		color_map[player_x[1]][player_y[1]] = A_COLOR;
-		color_map[player_x[2]][player_y[2]] = B_COLOR;
-
-		object_map[player_x[1]][player_y[1]] = PLAYER_A;
-		object_map[player_x[2]][player_y[2]] = PLAYER_B;
+		for (int i = 1; i < player_num + 1; i++) {
+			color_map[player_x[i]][player_y[i]] = i;
+	
+			object_map[player_x[i]][player_y[i]] = i;
+		}
 
 		for (int i = 0; i < color_map.length; i++) {
 			for (int j = 0; j < color_map[i].length; j++) {
@@ -536,60 +540,53 @@ public class Main extends Applet implements Runnable {
 	}
 
 	void battle(int player_A, int player_A_way, int player_B, int player_B_way) {// 戦闘判定
+		player_rival[player_A]=player_B;
 		if(player_status[player_A]==MATCHLESS){
 			color_explode(player_x[player_A],player_y[player_A],player_A);
 			player_battle[player_A]=WIN;
-			player_battle[player_B]=LOSE;
 			player_x[player_B] = player_first_x[player_B];
 			player_y[player_B] = player_first_y[player_B];
 		}else if(player_status[player_B]==MATCHLESS){
 			color_explode(player_x[player_B],player_y[player_B],player_B);
 			player_battle[player_A]=LOSE;
-			player_battle[player_B]=WIN;
 			player_x[player_A] = player_first_x[player_A];
 			player_y[player_A] = player_first_y[player_A];
 		}
-		else if (Math.abs(player_A_way - player_B_way) == 2) {// 正面衝突
+		else if (Math.abs(player_A_way - player_B_way) == 1||Math.abs(player_A_way - player_B_way) == 2||Math.abs(player_A_way - player_B_way) == 3) {// 正面衝突
 			if (player_color_num[player_A] < player_color_num[player_B]) {//Aの勝ち
 				color_explode(player_x[player_A],player_y[player_A],player_A);
 				player_battle[player_A]=WIN;
-				player_battle[player_B]=LOSE;
 				player_x[player_B] = player_first_x[player_B];
 				player_y[player_B] = player_first_y[player_B];
 			} else if (player_color_num[player_A] > player_color_num[player_B]) {//Bの勝ち
 				color_explode(player_x[player_B],player_y[player_B],player_B);
 				player_battle[player_A]=LOSE;
-				player_battle[player_B]=WIN;
 				player_x[player_A] = player_first_x[player_A];
 				player_y[player_A] = player_first_y[player_A];
 			} else {//Aの勝ち
 				color_explode(player_x[player_A],player_y[player_A],player_A);
 				player_battle[player_A]=WIN;
-				player_battle[player_B]=LOSE;
 				player_x[player_B] = player_first_x[player_B];
 				player_y[player_B] = player_first_y[player_B];
 			}
 		} else {// 背後から Aの勝ち
 			color_explode(player_x[player_A],player_y[player_A],player_A);
 			player_battle[player_A]=WIN;
-			player_battle[player_B]=LOSE;
 			player_x[player_B] = player_first_x[player_B];
 			player_y[player_B] = player_first_y[player_B];
 		}
 	}
 
 	void color_explode(int x,int y,int color) {// xとyを中心に3マスをカラーで塗る
-
-		for(int i=x-3;i<x+3;i++){
+		for(int i=x-3;i<=x+3;i++){
 			if(0<=i&&i<GRID_X){
-				for(int j=y-3;j<y+3;j++){
+				for(int j=y-3;j<=y+3;j++){
 					if(0<=j&&j<GRID_Y){
 						color_map[i][j]=color;
 					}
 				}
 			}
 		}
-		
 	}
 
 	void create_event() {
@@ -610,6 +607,10 @@ public class Main extends Applet implements Runnable {
 				create_event();
 			} else if (event_type == MATCHLESS) {
 				event_count=0;
+				player_status[ID]=MATCHLESS;
+				event_x=-1;
+				event_y=-1;
+				
 			}
 			
 		}
@@ -646,6 +647,12 @@ public class Main extends Applet implements Runnable {
 		}
 		data_AI[turn][ID-1][3]=player_status[ID];
 		data_AI[turn][ID-1][4]=player_battle[ID];
+		if(player_battle[ID]==NO){
+			data_AI[turn][ID-1][5]=-1;
+		}else{
+			data_AI[turn][ID-1][5]=player_rival[ID]-1;
+		}
+		player_battle[ID]=NO;
 	}
 	
 	void save_event(int turn){
@@ -656,7 +663,7 @@ public class Main extends Applet implements Runnable {
 	}
 
 	void write_AI_JSON() {
-	/*	System.out.println("終了");
+		System.out.println("終了");
 		Gson gson = new Gson();
 
 		try (
@@ -676,7 +683,7 @@ public class Main extends Applet implements Runnable {
 			}
 		
 		System.out.println("終了");
-	 */
+	 
 	}
 
 }
