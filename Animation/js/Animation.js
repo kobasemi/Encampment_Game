@@ -2,10 +2,10 @@
  *
  */
 
-
+var math = 27; //一マスの大きさ
 var i=0,e=0; //カウント用
 var event_timer=0; //イベントが出現してから何ターン経ったか
-var turn = 1; //ターン数カウント用
+var turn = 0; //ターン数カウント用
 var AI_Log; //AI情報配列
 var Event_Log; //マップイベント情報配列
 var Obst_Log; //障害物情報配列
@@ -13,17 +13,15 @@ var stage; //EaselJSのStageオブジェクト
 var colx; //Color_Fieldのコンテキスト
 var evex; //Event_Fieldのコンテキスト
 var AI = new Array(8); //AIのオブジェクト
-var AI_col = new Array("red.png","blue.png","purple.png","green.png","yellow.png","pink.png","orange.png","black.png"); //AIの色を格納
+var AI_color = new Array("#FF3562","#20A8D7","#A64A97","#009E96","#FFF67F","#EF858C","#E8AC51","#F9F9F9"); //AIの色を格納
 var AI_Tween = new Array(8); //AIのTweenオブジェクト
 var AI_num = 4; //AIの数を格納
-var MutekiMan = [1000,1000] //無敵の人
+var MutekiMan = [1000,1000]; //無敵の人
 var file1 = "img/battle.png"; //戦闘スプライトシート
-
 var file2 = "img/fire.png"; //爆発スプライトシート(再配布禁止)
 //https://mrbubblewand.files.wordpress.com/2010/01/fire_001.pngからダウンロード
 var file3 = "img/warp-effect.png"; //ワープスプライトシート(再配布禁止)
 //https://mrbubblewand.files.wordpress.com/2010/12/light_004.pngからダウンロード
-
 var file4 = "img/muteki-effect.png"; //無敵スプライトシート
 var manifest = [ {id : "bgm",src : "sound/cyber6.mp3"}, //音楽ファイルの宣言
                  {id : "explode",src : "sound/explosion05.mp3"},
@@ -36,49 +34,86 @@ var explosionSE;
 var battleSE;
 var mutekiSE;
 var warpSE;
+var IO;
 
+/*BGMとSEのロード*/
+function LoadBGM(){
+	var queue = new LoadQueue(false);
+	queue.installPlugin(Sound);
+	queue.loadManifest(manifest, true);
+	queue.addEventListener("complete", soundComplete);
+}
 
+/* BGMの再生と，SEのインスタンスの作成関数(ファイルのロードが終わったら，背景の描画) */
+function soundComplete() {
+	explosionSE = Sound.createInstance("explode");
+	battleSE = Sound.createInstance("battle");
+	mutekiSE = Sound.createInstance("muteki");
+	warpSE = Sound.createInstance("warp");
+	bgmMusic = Sound.createInstance("bgm");
+	
+	drawBackGround();
+	start();
+}
 
 /* 背景の描画関数 */
 function drawBackGround() {
 	var cnvs = document.getElementById("BackGround");
 	var ctx = cnvs.getContext("2d");
 	var img = new Image();
-	img.src = "img/field3.png";
+	img.src = "img/field5.png";
 	img.onload = function() {
-		ctx.drawImage(img, 0, 0, 572, 624);
+		ctx.drawImage(img, 0, 0, 593, 593);
+	}
+}
+
+/* 障害物の描画関数*/
+function drawObstacle(){
+	var j=0;
+	var x,y;
+	var cnvs = document.getElementById("Obst_Field");
+	var ctx = cnvs.getContext("2d");
+	var img = new Image();
+	img.src = "img/kabe.png";
+	img.onload = function(){
+		while(Obst_Log[j][0] != -1){
+		x = 39.5 + (math * Obst_Log[j][0])-13.5;
+		y = 39.5 + (math * Obst_Log[j][1])-13.5;
+		ctx.drawImage(img, x, y, 26, 26);
+		j++;
+		}
 	}
 }
 
 /* 色々準備関数 */
 function initialize() {
+
 	$.ajaxSetup({ async : false});
-	$.getJSON("json/AI.json", function(data) { AI_Log = data; }); //json拾ってくる処理
+	$.getJSON("json/AI.json", function(data) { AI_Log = data; });
 	$.getJSON("json/Event.json", function(data) { Event_Log = data; });
+	$.getJSON("json/Obstacle.json", function(data) { Obst_Log = data; });
 	$.ajaxSetup({ async : true });
-
-	var queue = new LoadQueue(false); //sound系の処理
-	queue.installPlugin(Sound);
-	queue.loadManifest(manifest, true);
-	queue.addEventListener("fileload", soundLoaded);
-
+	
+	drawObstacle();
 	var AICanvas = document.getElementById("AI_Field"); //AI描画キャンバスの宣言
 	stage = new Stage(AICanvas);
 	var ColorCanvas = document.getElementById("Color_Field"); //色描画キャンバスの宣言
 	colx = ColorCanvas.getContext("2d");
 	var EventCanvas = document.getElementById("Event_Field"); //イベント描画キャンバスの宣言
 	evex = EventCanvas.getContext("2d");
-
+	
 	for(i=0;i<AI_num;i++){ AI[i] = new Shape(); stage.addChild(AI[i]); }
 	Ticker.addEventListener("tick", function(){ stage.update(); });
 	for(i=0;i<AI_num;i++){ //AIの初期座標の指定と描画とTweenの設定
-		AI[i].x = 39.5+(26*AI_Log[0][i][0]); //x座標
-		AI[i].y = 66+(26*AI_Log[0][i][1]); //y座標
+		AI[i].x = 39.5+(math*AI_Log[0][i][0]); //x座標
+		AI[i].y = 39.5+(math*AI_Log[0][i][1]); //y座標
 		AI_Tween[i] = new Tween(AI[i], {loop:false}); //Tweenオブジェクトの作成
 		drawAI(); //描画
 		drawColorField(); //色の描画
 	}
-	alert("Hello");
+	bgmMusic.play("none", 0, 0, -1, 0.3, 0);
+	drawEvent();
+	turn = 1;
 	drawAnimation();
 }
 
@@ -90,65 +125,52 @@ function drawAI() {
 	stage.update();
 }
 
-/* BGMの再生と，SEのインスタンスの作成関数 */
-function soundLoaded() {
-	bgmMusic = Sound.createInstance("bgm");
-	explosionSE = Sound.createInstance("explode");
-	battleSE = Sound.createInstance("battle");
-	mutekiSE = Sound.createInstance("muteki");
-	warpSE = Sound.createInstance("warp");
-
-	bgmMusic.play("none", 0, 0, -1, 0.3, 0);
-
-}
-
 
 /* マスの色の描画関数 */
-function drawColorField() {
-	var cimg = new Image();
-	cimg.src = "img/" + AI_col[i];
-	var dx = AI[i].x-13.2;
-	var dy = AI[i].y-14;
-	cimg.onload = function() {
-		colx.drawImage(cimg,dx,dy);
-	}
+function drawColorField(){
+	colx.fillStyle = AI_color[i];
+	var x = 39.5 + (math * AI_Log[turn][i][0])-13.5;
+	var y = 39.5 + (math * AI_Log[turn][i][1])-13.5;
+	colx.fillRect(x, y, 26, 26);
 }
 
 /* 戦闘結果のマスの色の描画関数 */
-function BdrawColorField() {
+function BdrawColorField(A) {
 	var count_x, count_y; //カウント用
-	var dx = AI[i].x - (26 * 3) -13.2;
-	var dy = AI[i].y - (26 * 3) -14;
-	var dxc = dx; //dx避難用
-	var cimg = new Image();
-	cimg.src = "img/" + AI_col[i];
-	cimg.onload = function() {
-		for (count_y = 0; count_y < 7; count_y++) {
-			dx = dxc;
-			for (count_x = 0; count_x < 7; count_x++) {
-				if(dx >= 26 && dx <= 26*21 && dy >= 26*2 && dy <= 26*22){ colx.drawImage(cimg, dx, dy); }
-				dx += 26;
-			}
-			dy +=26;
+	var x = AI[A].x - (math * 3) -13.5;
+	var y = AI[A].y - (math * 3) -13.5;
+
+	var xc = x; //x避難用
+	colx.fillStyle = AI_color[A];
+	for (count_y = 0; count_y < 7; count_y++) {
+		x = xc;
+		for (count_x = 0; count_x < 7; count_x++) {
+			if(x >= 26 && x <= 26 * 21 && y >= 26 && y <= 26 * 21){colx.fillRect(x, y, 26, 26); }
+			x += math;
 		}
+		y +=math;
 	}
 }
 
 /* アニメーション描画用関数 */
 function drawAnimation() {
 	var timer = setInterval(function() {
-		drawEvent(); //イベントマス描画
-		MutekiClear(); //無敵になって20ターン経ったAIを元に戻す
-		for (i = 0; i < AI_num; i++) {
-			drawWalk(); //AIの移動処理
-			drawColorField(); //色の描画
-			eventArise(); //イベントが発生していたら，その処理
-		}
-		for (i = 0; i < AI_num; i++) {
-			Battle(); //戦闘が発生していたらその処理
+		if(turn <= 501){
+			drawEvent(); //イベントマス描画
+			MutekiClear(); //無敵になって20ターン経ったAIを元に戻す
+			for (i = 0; i < AI_num; i++) {
+				drawWalk(); //AIの移動処理
+				Battle(); //戦闘が発生していたらその処理
+				drawColorField(); //色の描画
+				eventArise(); //イベントが発生していたら，その処理
+			}
 		}
 		turn++;
-		if (turn == 33) { //33ターン経ったら止まる(本当は500ターン)
+
+		if (turn == 502) {
+			for(i=0; i<4; i++){
+				drawColorField(); //色の描画
+			}
 			clearInterval(timer);
 		}
 	}, 200);
@@ -159,7 +181,6 @@ function drawEvent() {
 	if(turn - event_timer >= 20){
 		evex.clearRect(0,0,572,624); //20ターン経ったらイベントマス消滅
 	}
-
 	if (Event_Log[e][0] == turn) {
 		event_timer = turn;
 		var eimg = new Image();
@@ -170,8 +191,8 @@ function drawEvent() {
 		}else if(Event_Log[e][1] == 3){
 			eimg.src = "img/muteki.png"; //無敵マス画像
 		}
-		var x = 39.5 + (26 * Event_Log[e][2])-12.8;
-		var y = 66 + (26 * Event_Log[e][3])-14.5;
+		var x = 39.5 + (math * Event_Log[e][2])-13.6;
+		var y = 39.5 + (math * Event_Log[e][3])-13.6;
 		eimg.onload = function(){
 			evex.drawImage(eimg, x, y);
 		}
@@ -182,36 +203,28 @@ function drawEvent() {
 /* AIの移動処理関数 */
 function drawWalk() {
 	if (AI_Log[turn][i][2] == 1) { //上に移動するときの処理
-		if (AI[i].y == 66) {
-			AI_Tween[i].to({y : 66 + (26 * 19)}, 0, Ease.linear);
-			AI[i].y = 66 + (26 * 19);
+		if (AI[i].y <= 40) {
+			AI[i].y = 39.5 + (math * 19);
 		} else {
-			AI_Tween[i].to({y : AI[i].y - 26}, 0, Ease.linear);
-			AI[i].y -= 26;
+			AI[i].y -= math;
 		}
 	} else if (AI_Log[turn][i][2] == 2) { //右に移動するときの処理
-		if (AI[i].x == 39.5 + (26 * 19)) {
-			AI_Tween[i].to({x : 39.5}, 0, Ease.linear);
+		if (AI[i].x >= 39 + (math * 19)) {
 			AI[i].x = 39.5;
 		} else {
-			AI_Tween[i].to({x : AI[i].x + 26}, 0, Ease.linear);
-			AI[i].x += 26;
+			AI[i].x += math;
 		}
 	} else if (AI_Log[turn][i][2] == 3) { //下に移動するときの処理
-		if (AI[i].y == 66 + (26 * 19)) {
-			AI_Tween[i].to({y : 66}, 0, Ease.linear);
-			AI[i].y = 66;
+		if (AI[i].y >= 39 + (math * 19)) {
+			AI[i].y = 39.5;
 		} else {
-			AI_Tween[i].to({y : AI[i].y + 26}, 0, Ease.linear);
-			AI[i].y += 26;
+			AI[i].y += math;
 		}
 	} else if (AI_Log[turn][i][2] == 4) { //左に移動するときの処理
-		if (AI[i].x == 39.5) {
-			AI_Tween[i].to({x : 39.5 + (26 * 19)}, 0, Ease.linear);
-			AI[i].x = 39.5 + (26 * 19);
+		if (AI[i].x <= 40) {
+			AI[i].x = 39.5 + (math * 19);
 		} else {
-			AI_Tween[i].to({x : AI[i].x - 26}, 0, Ease.linear);
-			AI[i].x -= 26;
+			AI[i].x -= math;
 		}
 	}
 }
@@ -221,24 +234,22 @@ function eventArise() {
 	if (AI_Log[turn][i][3] == 0) {
 		//何もしない
 	} else if (AI_Log[turn][i][3] == 1) { //地雷を踏んだ時の処理
-		//alert("地雷を踏みました");
 		drawEffect(1);
 		explosionSE.play("none", 0, 0, 0, 1, 0);
-		var x = AI[i].x - (26 * 3.5);
-		var y = AI[i].y - (26 * 3.5);
+		var x = AI[i].x - (math * 3.5);
+		var y = AI[i].y - (math * 3.5);
 		colx.clearRect(x, y, 182, 182); //周囲三マスの色を消去
 		evex.clearRect(x, y, 182, 182); //イベントマスを消去
+
 	} else if (AI_Log[turn][i][3] == 2) { //ワープを踏んだ時の処理
-		//alert("ワープを踏みました");
 		drawEffect(3);
 		warpSE.play("none", 0, 0, 0, 1, 0);
-		AI[i].x = 39.5 + (26 * AI_Log[turn][i][0]);
-		AI[i].y = 66 + (26 * AI_Log[turn][i][1]);
-		drawColorField();
+		AI[i].x = 39.5 + (math * AI_Log[turn][i][0]);
+		AI[i].y = 39.5 + (math * AI_Log[turn][i][1]);
+
 	} else if (AI_Log[turn][i][3] == 3) { //無敵を踏んだ時の処理
-		//alert("無敵を踏みました");
-		var x = AI[i].x - (26 * 3.5);
-		var y = AI[i].y - (26 * 3.5);
+		var x = AI[i].x - (math * 3.5);
+		var y = AI[i].y - (math * 3.5);
 		drawEffect(4);
 		mutekiSE.play("none", 0, 0, 0, 1, 0);
 		evex.clearRect(x, y, 182, 182); //イベントマスを消去
@@ -249,19 +260,66 @@ function eventArise() {
 	}
 }
 
+/*戦闘で負けて，とばされた時の戻り処理*/
+function BdrawWalk(t,A,x,y) {
+	if (AI_Log[t][A][2] == 3) { //上に移動するときの処理
+		if (y <= 40) {
+			y = 39.5 + (math * 19);
+		} else {
+			y -= math;
+		}
+	} else if (AI_Log[t][A][2] == 4) { //右に移動するときの処理
+		if (x >= 39 + (math * 19)) {
+			x = 39.5;
+		} else {
+			x += math;
+		}
+	} else if (AI_Log[t][A][2] == 1) { //下に移動するときの処理
+		if (y >= 39 + (math * 19)) {
+			y = 39.5;
+		} else {
+			y += math;
+		}
+	} else if (AI_Log[t][A][2] == 2) { //左に移動するときの処理
+		if (x <= 40) {
+			x = 39.5 + (math * 19);
+		} else {
+			x -= math;
+		}
+	}
+	AI[A].x = x;
+	AI[A].y = y;
+}
+
 /* 戦闘描画関数 */
 function Battle() {
+	var x,y;
+	var A = AI_Log[turn][i][5];
+
 	if (AI_Log[turn][i][4] == 0) {
 		//何もしない
 	} else if (AI_Log[turn][i][4] == 1) { //戦闘に勝った時の処理
 
-		BdrawColorField();
+		drawEffect(-1);
+		battleSE.play("none", 0, 0, 0, 1, 0);
+		if(i > AI_Log[turn][i][5]){
+			x = 39.5 + (math * AI_Log[turn+1][A][0]);
+			y = 39.5 + (math * AI_Log[turn+1][A][1]);
+			BdrawWalk(turn+1,A,x,y);
+		}else{
+			x = 39.5 + (math * AI_Log[turn][A][0]);
+			y = 39.5 + (math * AI_Log[turn][A][1]);
+			BdrawWalk(turn,A,x,y);
+		}
+		BdrawColorField(i);
+
 	} else if (AI_Log[turn][i][4] == 2) { //戦闘に負けたときの処理
 		drawEffect(0);
 		battleSE.play("none", 0, 0, 0, 1, 0);
-		AI[i].x = 39.5 + (26 * AI_Log[turn][i][0]);
-		AI[i].y = 66 + (26 * AI_Log[turn][i][1]);
-		drawColorField();
+		AI[i].x = 39.5 + (math * AI_Log[turn][i][0]);
+		AI[i].y = 39.5 + (math * AI_Log[turn][i][1]);
+		//BdrawWalk(i,x,y);
+		BdrawColorField(A);
 	}
 }
 
@@ -278,6 +336,17 @@ function drawEffect(effect_num){
 		stage.addChild(animation); //AI_Fieldに描画
 		animation.x = AI[i].x-160;
 		animation.y = AI[i].y-120;
+		animation.gotoAndPlay("kill");
+	}else if(effect_num == -1){ //戦闘描画2
+		var A = AI_Log[turn][i][5];
+		data.images = [file1];
+		data.frames = {width:320, height:240, regX:0, regY:0};
+		data.animations = {kill:[0,9,false,1]};
+		var mySpriteSheet = new SpriteSheet(data);
+		var animation = new Sprite(mySpriteSheet);
+		stage.addChild(animation); //AI_Fieldに描画
+		animation.x = AI[A].x-160;
+		animation.y = AI[A].y-120;
 		animation.gotoAndPlay("kill");
 	}else if(effect_num == 1){ //地雷描写
 		data.images = [file2];
