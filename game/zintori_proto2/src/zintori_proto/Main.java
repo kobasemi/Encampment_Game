@@ -23,7 +23,7 @@ import com.google.gson.stream.JsonWriter;
 public class Main extends Applet implements Runnable {
 	Image back;
 	Graphics buffer;
-	int player_num = 2;
+	int player_num = 10;
 	// //AIをつくるための入れ物たち////
 	String AI_name[] = new String[player_num + 1];
 	Object myPlayer[] = new Object[player_num + 1];
@@ -39,7 +39,7 @@ public class Main extends Applet implements Runnable {
 	Method set_event_data[] = new Method[player_num + 1];
 	Method action[] = new Method[player_num + 1];
 
-	URL[] urls = new URL[3];
+	URL[] urls = new URL[player_num];
 	// //////////////////////////
 	Thread t;
 	Image field = getToolkit().getImage("field.gif");
@@ -68,14 +68,16 @@ public class Main extends Applet implements Runnable {
 	final int GRID_Y = 20;
 	final int TURN = 500;
 	// イベント情報
-	public final int NOEVENT = 0;// 無し
-	public final int LANDMINE = 1;// 地雷
-	public final int WARP = 2;// ワープ
-	public final int MATCHLESS = 3;// 無敵
+	final int NOEVENT = 0;// 無し
+	final int LANDMINE = 1;// 地雷
+	final int WARP = 2;// ワープ
+	final int MATCHLESS = 3;// 無敵
 	//勝ち負け
-	public final int NO = 0;// 無し
-	public final int WIN = 1;// 勝ち
-	public final int LOSE = 2;// 負け
+	final int NO = 0;// 無し
+	final int WIN = 1;// 勝ち
+	final int LOSE = 2;// 負け
+	//障害物
+	final int OBSTACLE_NUM = 100;
 
 	// 変数
 	private int[] player_first_x = new int[player_num + 1];
@@ -95,6 +97,9 @@ public class Main extends Applet implements Runnable {
 	private int event_type = 0;// 
 	private int event_born = 0;// 
 	private int event_count = 0;// 
+	
+	private int[] obstacle_x = new int[OBSTACLE_NUM];//障害物のx
+	private int[] obstacle_y = new int[OBSTACLE_NUM];//障害物のy
 
 	int turn = 0;
 	boolean game_finish = false;
@@ -103,6 +108,7 @@ public class Main extends Applet implements Runnable {
 	
 	int data_AI[][][]=new int[TURN+2][4][6];
 	int data_event[][]=new int[TURN+2][4];
+	int data_obstacle[][]=new int[100][2];
 
 	int object_map[][] = { // マップ情報（プレイヤー位置等）
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -163,15 +169,18 @@ public class Main extends Applet implements Runnable {
 
 	// 初期化
 	public void init() {
-
+		player_num=3;//debug
 		// ////内部のクラスであれば以下のような処理はいらないが、外部jarからAIを読み込む必要があるため、若干複雑な処理が必要//////
 		try {
 			urls[0] = new URL(
 					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/AI_stalker.jar");// AIのクラスが入っているjarファイルの位置指定
 			urls[1] = new URL(
 					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/test_AI_B.jar");// AIのクラスが入っているjarファイルの位置指定
+			urls[2] = new URL(
+					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/test_AI_A.jar");// AIのクラスが入っているjarファイルの位置指定
 			AI_name[1] = "AI_stalker.AI_stalker";// パッケージ名.クラス名
 			AI_name[2] = "test_AI_B.Player_B";// パッケージ名.クラス名
+			AI_name[3] = "test_AI_A.Player_A";// パッケージ名.クラス名
 			
 			ClassLoader parent = ClassLoader.getSystemClassLoader();// クラスローダ作成
 			URLClassLoader urlClassLoader = new URLClassLoader(urls, parent);// 外部jarを読み込むためのＵＲＬクラスローダ作成
@@ -197,6 +206,7 @@ public class Main extends Applet implements Runnable {
 				action[i] = AI_class[i].getMethod("action");// AI_classが持つactionメソッドを設定
 
 				set_info[i].invoke(myPlayer[i], i, player_num - 1);
+				
 			}
 
 		} catch (InstantiationException e) {
@@ -247,6 +257,7 @@ public class Main extends Applet implements Runnable {
 							player_status[i]=NO;
 						}
 					}
+					
 					for (int i = 1; i < player_num + 1; i++) {
 	
 					
@@ -266,6 +277,7 @@ public class Main extends Applet implements Runnable {
 					
 					Thread.sleep(50);
 				} else {	
+					save_obstacle();
 					write_AI_JSON();
 					game_finish = true;
 					Thread.sleep(100);
@@ -435,7 +447,10 @@ public class Main extends Applet implements Runnable {
 				if (data[UP] == 0) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_y[ID] = GRID_Y - 1;
-				} else if (data[UP] >= 1) {
+				}else if(data[UP] == -1){  
+					player_stop[ID]=true;
+				}else if (data[UP] >= 1) {
+				
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_y[ID] = GRID_Y - 1;
 					// 戦闘判定//
@@ -446,6 +461,8 @@ public class Main extends Applet implements Runnable {
 				if (data[UP] == 0) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_y[ID]--;
+				}else if(data[UP] == -1){  
+					player_stop[ID]=true;
 				} else if (data[UP] >= 1) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_y[ID]--;
@@ -459,6 +476,8 @@ public class Main extends Applet implements Runnable {
 				if (data[DOWN] == 0) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_y[ID] = 0;
+				}else if(data[DOWN] == -1){  
+					player_stop[ID]=true;
 				} else if (data[DOWN] >= 1) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_y[ID] = 0;
@@ -471,6 +490,8 @@ public class Main extends Applet implements Runnable {
 				if (data[DOWN] == 0) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_y[ID]++;
+				}else if(data[DOWN] == -1){  
+					player_stop[ID]=true;
 				} else if (data[DOWN] >= 1) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_y[ID]++;
@@ -486,6 +507,8 @@ public class Main extends Applet implements Runnable {
 				if (data[LEFT] == 0) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_x[ID] = GRID_X - 1;
+				}else if(data[LEFT] == -1){  
+					player_stop[ID]=true;
 				} else if (data[LEFT] >= 1) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_x[ID] = GRID_X - 1;
@@ -499,6 +522,8 @@ public class Main extends Applet implements Runnable {
 				if (data[LEFT] == 0) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_x[ID]--;
+				}else if(data[LEFT] == -1){  
+					player_stop[ID]=true;
 				} else if (data[LEFT] >= 1) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_x[ID]--;
@@ -513,6 +538,8 @@ public class Main extends Applet implements Runnable {
 				if (data[RIGHT] == 0) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_x[ID] = 0;
+				}else if(data[RIGHT] == -1){  
+					player_stop[ID]=true;
 				} else if (data[RIGHT] >= 1) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_x[ID] = 0;
@@ -525,6 +552,8 @@ public class Main extends Applet implements Runnable {
 				if (data[RIGHT] == 0) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_x[ID]++;
+				}else if(data[RIGHT] == -1){  
+					player_stop[ID]=true;
 				} else if (data[RIGHT] >= 1) {
 					object_map[player_x[ID]][player_y[ID]] = 0;
 					player_x[ID]++;
@@ -535,7 +564,7 @@ public class Main extends Applet implements Runnable {
 				}
 			}
 		} else {// 1ターン停止
-
+			player_stop[ID]=true;
 		}
 	}
 
@@ -635,6 +664,14 @@ public class Main extends Applet implements Runnable {
 			player_way[i] = 0;
 			player_color_num[i] = 0;
 		}
+		for (int i = 0; i < OBSTACLE_NUM; i++) {
+			obstacle_x[i]=-1;
+			obstacle_y[i]=-1;
+			if(0<=obstacle_x[i]&&obstacle_x[i]<GRID_X&&0<=obstacle_y[i]&&obstacle_y[i]<GRID_Y){
+				object_map[obstacle_x[i]][obstacle_y[i]]=-1;
+			}
+		}
+		
 	}
 	
 	void save_AI(int turn,int ID){
@@ -662,6 +699,13 @@ public class Main extends Applet implements Runnable {
 		data_event[turn][3]=event_y;
 	}
 
+	void save_obstacle(){
+		for (int i = 0; i < OBSTACLE_NUM; i++) {
+			data_obstacle[i][0]=obstacle_x[i];
+			data_obstacle[i][1]=obstacle_y[i];
+		}
+	}
+	
 	void write_AI_JSON() {
 		System.out.println("終了");
 		Gson gson = new Gson();
@@ -681,6 +725,14 @@ public class Main extends Applet implements Runnable {
 			} catch (IOException ex) {
 			    ex.printStackTrace();
 			}
+		
+		try (
+				JsonWriter writer = new JsonWriter(new BufferedWriter(new FileWriter("/Users/koba/Documents/workspace/zintori_proto2/hoge/Obstacle.json")))) {     
+				    gson.toJson(new JsonPrimitive(gson.toJson(data_obstacle)), writer);
+				    
+				} catch (IOException ex) {
+				    ex.printStackTrace();
+				}
 		
 		System.out.println("終了");
 	 
