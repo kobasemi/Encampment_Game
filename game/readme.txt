@@ -1,0 +1,8 @@
+AI_libralyを変更した際の更新手順
+
+1．AI_libralyをエクスポート(ファイル→エクスポート→JAVA→JAR file→特に設定はいじらずOK)して，JARファイルとして保存する．
+2．作成したAI_libralyのJARファイルを，各AIのlibフォルダとzintori_proto2のlibフォルダにコピー
+3．各AIを「1」のAI_libralyと同様にJARファイルとして出力し，hogeフォルダにコピー
+4．zintori_proto2を実行して動作を確かめる．
+
+zintori_proto2をインポートした際は，AI読み込みのパス(initメソッド)やJSON書き込みへのパス(write_AI_JSONメソッド)が他人の環境用になっていないか注意する．
