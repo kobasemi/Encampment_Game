@@ -6,3 +6,4 @@ AI_libralyを変更した際の更新手順
 4．zintori_proto2を実行して動作を確かめる．
 
 zintori_proto2をインポートした際は，AI読み込みのパス(initメソッド)やJSON書き込みへのパス(write_AI_JSONメソッド)が他人の環境用になっていないか注意する．
+

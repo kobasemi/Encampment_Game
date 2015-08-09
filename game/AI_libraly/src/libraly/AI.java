@@ -31,18 +31,18 @@ public class   AI {
 		public final int WARP=2;//ワープ
 		public final int MATCHLESS=3;//無敵
 		
-	//変数
-	public int player_num = 2;
-	public int[] player_x=new int[player_num+1]; //位置x
-	public int[] player_y=new int[player_num+1]; //位置y
-	public int[] player_color_num=new int[player_num+1]; //゙塗りつぶしたマスの数
-	public int[] player_way=new int[player_num+1]; //方向
-	public int player_status=0; //ステータス
-	public int[][] object_map=new int[GRID_X][GRID_Y]; //オブジェクトデータ
-	public int[][] color_map=new int[GRID_X][GRID_Y]; //色データ
-
-	public int event_x=0;//イベントマスの位置x
-	public int event_y=0;//イベントマスの位置y
+		//変数
+		public int player_num = 2;
+		public int[] player_x=new int[player_num+1]; //位置x
+		public int[] player_y=new int[player_num+1]; //位置y
+		public int[] player_color_num=new int[player_num+1]; //゙塗りつぶしたマスの数
+		public int[] player_way=new int[player_num+1]; //プレイヤーの方向(自分の方向に値を代入することで次のターンに移動する方向を決める)
+		public int player_status=0; //ステータス
+		public int[][] object_map=new int[GRID_X][GRID_Y]; //オブジェクトデータ
+		public int[][] color_map=new int[GRID_X][GRID_Y]; //色データ
+	
+		public int event_x=0;//イベントマスの位置x
+		public int event_y=0;//イベントマスの位置y
 	
 	
 	
@@ -55,7 +55,15 @@ public class   AI {
 	public  AI(){  
 	}
 	
-	public void set_info(int ID,int enemy_num){//引数によって敵の数とプレイヤーや色の番号をセット(例)プレイヤー1→1、プレイヤー2→2
+	/*引数によって敵の数とプレイヤーIDや色の番号をセット 
+	**(例)自分がプレイヤー2でプレイヤー数が4の場合は
+	**PLAYER=2
+	**ENEMY[0]=1
+	**ENEMY[2]=3
+	**ENEMY[3]=4
+	**カラーも同様
+	*/
+	public void set_info(int ID,int enemy_num){
 		PLAYER=ID;
 		for(int i=0,j=1;i<ENEMY.length;i++){
 			if(j!=PLAYER){
@@ -125,9 +133,11 @@ public class   AI {
 		event_y=y;
 	}
 
-
-	//処理
-	public void action(){//AIの処理を書く (以下はランダム移動の例)
+	/*AIの処理を書く (以下はランダム移動の例)
+	**actionの処理終了時のplayer_way[PLAYER]の値によって
+	**次にプレイヤーが移動する方向を決定する
+	*/
+	public void action(){
 		int walk_ran =UP;
 		walk_ran=rnd.nextInt(4)+1;
 
