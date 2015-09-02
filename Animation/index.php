@@ -8,34 +8,21 @@
 <script>
 	var createjs = window;
 </script>
+
 <script src="lib/jquery-1.11.3.min.js"></script>
 <script src="lib/easeljs-0.8.1.min.js"></script>
 <script src="lib/tweenjs-0.6.1.min.js"></script>
 <script src="lib/preloadjs-0.6.1.min.js"></script>
 <script src="lib/soundjs-0.6.1.min.js"></script>
-<script src="js/info.js"></script>
 <script src="js/effect.js"></script>
 <script src="js/Animation.js"></script>
-<script>
-
-</script>
+<script src="js/Data.js"></script>
 </head>
 
-<body onload="LoadBGM();">
-	<div class="box">
-		<p id="ai1"></p>
-		<p id="ai2"></p>
-		<p id="ai3"></p>
-		<p id="ai4"></p>
-		<p id="ai5"></p>
-		<p id="ai6"></p>
-		<p id="ai7"></p>
-		<p id="ai8"></p>
-	</div>
+<body onload="Data();">
 	<canvas id="BackGround" width="593" height="593"></canvas>
 	<canvas id="Color_Field" width="593" height="593"></canvas>
 	<canvas id="Event_Field" width="593" height="593"></canvas>
 	<canvas id="AI_Field" width="593" height="593"></canvas>
-	<canvas id="Obst_Field" width="593" height="593"></canvas>
 </body>
 </html>

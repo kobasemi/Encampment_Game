@@ -6,16 +6,13 @@ var math = 27; //一マスの大きさ
 var i=0,e=0; //カウント用
 var event_timer=0; //イベントが出現してから何ターン経ったか
 var turn = 0; //ターン数カウント用
-var AI_Log; //AI情報配列
-var Event_Log; //マップイベント情報配列
-var Obst_Log; //障害物情報配列
 var stage; //EaselJSのStageオブジェクト
 var colx; //Color_Fieldのコンテキスト
 var evex; //Event_Fieldのコンテキスト
 var AI = new Array(8); //AIのオブジェクト
+var AI_num = 4; //AIの数を格納
 var AI_color = new Array("#FF3562","#20A8D7","#A64A97","#009E96","#FFF67F","#EF858C","#E8AC51","#F9F9F9"); //AIの色を格納
 var AI_Tween = new Array(8); //AIのTweenオブジェクト
-var AI_num = 4; //AIの数を格納
 var MutekiMan = [1000,1000]; //無敵の人
 var file1 = "img/battle.png"; //戦闘スプライトシート
 var file2 = "img/fire.png"; //爆発スプライトシート(再配布禁止)
@@ -58,6 +55,25 @@ function soundComplete() {
 
 /* 背景の描画関数 */
 function drawBackGround() {
+	canvas1 = document.getElementById("BackGround");
+	canvas2 = document.getElementById("Color_Field");
+	canvas3 = document.getElementById("Event_Field");
+	canvas4 = document.getElementById("AI_Field");
+	canvas5 = document.getElementById("Obst_Field");
+	
+	var scale = 0.4345;
+	
+	canvas1.style.width = screen.width * scale + "px";
+	canvas1.style.height = screen.width * scale + "px";
+	canvas2.style.width = screen.width * scale + "px";
+	canvas2.style.height = screen.width * scale + "px";
+	canvas3.style.width = screen.width * scale + "px";
+	canvas3.style.height = screen.width * scale + "px";
+	canvas4.style.width = screen.width * scale + "px";
+	canvas4.style.height = screen.width * scale + "px";
+	canvas5.style.width = screen.width * scale + "px";
+	canvas5.style.height = screen.width * scale + "px";
+	
 	var cnvs = document.getElementById("BackGround");
 	var ctx = cnvs.getContext("2d");
 	var img = new Image();
@@ -88,12 +104,6 @@ function drawObstacle(){
 /* 色々準備関数 */
 function initialize() {
 
-	$.ajaxSetup({ async : false});
-	$.getJSON("json/AI.json", function(data) { AI_Log = data; });
-	$.getJSON("json/Event.json", function(data) { Event_Log = data; });
-	$.getJSON("json/Obstacle.json", function(data) { Obst_Log = data; });
-	$.ajaxSetup({ async : true });
-	
 	drawObstacle();
 	var AICanvas = document.getElementById("AI_Field"); //AI描画キャンバスの宣言
 	stage = new Stage(AICanvas);
