@@ -23,7 +23,7 @@ function LoadJson() {
 	$(function() {
 		$.ajax({
 			type : "POST",
-			url : "http://localhost:8080/Test/JsonServer",
+			url : "http://10.1.4.166/zintori2",
 			data : {
 				AIname : Playersarray
 			},
