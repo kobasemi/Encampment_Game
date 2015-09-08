@@ -72,4 +72,21 @@ div.box {
 	margin-top: -50px; margin-left: -125px;
 	z-index:6;
 }
+
+#btn {
+	background: #EEE;
+	border: 3px solid #DDD;
+	color: #111;
+	width: 100px;
+	padding: 10px 0;
+}
+
+div.replay {
+	position: absolute; top: 75%; left:5%;
+}
+
+div.speed {
+	position: absolute; top: 85%; left:5%;
+}
+
   

@@ -1,7 +1,6 @@
 /**
  *
  */
-
 var math = 27; //一マスの大きさ
 var i=0,e=0; //カウント用
 var event_timer=0; //イベントが出現してから何ターン経ったか
@@ -9,6 +8,7 @@ var turn = 0; //ターン数カウント用
 var stage; //EaselJSのStageオブジェクト
 var colx; //Color_Fieldのコンテキスト
 var evex; //Event_Fieldのコンテキスト
+var obsx; //Obst_Fieldのコンテキスト
 var AI = new Array(8); //AIのオブジェクト
 var AI_num = 4; //AIの数を格納
 var AI_color = new Array("#FF3562","#20A8D7","#A64A97","#009E96","#FFF67F","#EF858C","#E8AC51","#F9F9F9"); //AIの色を格納
@@ -55,24 +55,6 @@ function soundComplete() {
 
 /* 背景の描画関数 */
 function drawBackGround() {
-	canvas1 = document.getElementById("BackGround");
-	canvas2 = document.getElementById("Color_Field");
-	canvas3 = document.getElementById("Event_Field");
-	canvas4 = document.getElementById("AI_Field");
-	canvas5 = document.getElementById("Obst_Field");
-	
-	var scale = 0.4345;
-	
-	canvas1.style.width = screen.width * scale + "px";
-	canvas1.style.height = screen.width * scale + "px";
-	canvas2.style.width = screen.width * scale + "px";
-	canvas2.style.height = screen.width * scale + "px";
-	canvas3.style.width = screen.width * scale + "px";
-	canvas3.style.height = screen.width * scale + "px";
-	canvas4.style.width = screen.width * scale + "px";
-	canvas4.style.height = screen.width * scale + "px";
-	canvas5.style.width = screen.width * scale + "px";
-	canvas5.style.height = screen.width * scale + "px";
 	
 	var cnvs = document.getElementById("BackGround");
 	var ctx = cnvs.getContext("2d");
@@ -88,14 +70,14 @@ function drawObstacle(){
 	var j=0;
 	var x,y;
 	var cnvs = document.getElementById("Obst_Field");
-	var ctx = cnvs.getContext("2d");
+	obsx = cnvs.getContext("2d");
 	var img = new Image();
 	img.src = "img/kabe.png";
 	img.onload = function(){
 		while(Obst_Log[j][0] != -1){
 		x = 39.5 + (math * Obst_Log[j][0])-13.5;
 		y = 39.5 + (math * Obst_Log[j][1])-13.5;
-		ctx.drawImage(img, x, y, 26, 26);
+		obsx.drawImage(img, x, y, 26, 26);
 		j++;
 		}
 	}
@@ -103,17 +85,19 @@ function drawObstacle(){
 
 /* 色々準備関数 */
 function initialize() {
-
-	drawObstacle();
 	var AICanvas = document.getElementById("AI_Field"); //AI描画キャンバスの宣言
 	stage = new Stage(AICanvas);
 	var ColorCanvas = document.getElementById("Color_Field"); //色描画キャンバスの宣言
 	colx = ColorCanvas.getContext("2d");
 	var EventCanvas = document.getElementById("Event_Field"); //イベント描画キャンバスの宣言
 	evex = EventCanvas.getContext("2d");
-	
-	for(i=0;i<AI_num;i++){ AI[i] = new Shape(); stage.addChild(AI[i]); }
 	Ticker.addEventListener("tick", function(){ stage.update(); });
+	initialize2();
+}
+
+function initialize2(){
+	drawObstacle();
+	for(i=0;i<AI_num;i++){ AI[i] = new Shape(); stage.addChild(AI[i]); }
 	for(i=0;i<AI_num;i++){ //AIの初期座標の指定と描画とTweenの設定
 		AI[i].x = 39.5+(math*AI_Log[0][i][0]); //x座標
 		AI[i].y = 39.5+(math*AI_Log[0][i][1]); //y座標
@@ -164,7 +148,9 @@ function BdrawColorField(A) {
 
 /* アニメーション描画用関数 */
 function drawAnimation() {
+	GameOver = 0;
 	var timer = setInterval(function() {
+		
 		if(turn <= 501){
 			drawEvent(); //イベントマス描画
 			MutekiClear(); //無敵になって20ターン経ったAIを元に戻す
@@ -176,6 +162,23 @@ function drawAnimation() {
 			}
 		}
 		turn++;
+		
+		if(GameOver == 1){ //Replayの処理
+			clearInterval(timer);
+			turn = 0;
+			bgmMusic.stop();
+			colx.clearRect(0, 0, 593, 593); 
+			evex.clearRect(0, 0, 593, 593); 
+			obsx.clearRect(0, 0, 593, 593);
+			stage.removeAllChildren();
+			stage.update();
+			event_timer=0;
+		}
+		
+		if(GameOver == 2){ //一時停止の処理
+			clearInterval(timer);
+			drawAnimation();
+		}
 
 		if (turn == 502) {
 			for(i=0; i<4; i++){
@@ -183,13 +186,13 @@ function drawAnimation() {
 			}
 			clearInterval(timer);
 		}
-	}, 200);
+	}, speed);
 }
 
 /* イベントマス描画関数(テスト用) */
 function drawEvent() {
 	if(turn - event_timer >= 20){
-		evex.clearRect(0,0,572,624); //20ターン経ったらイベントマス消滅
+		evex.clearRect(0,0,593,593); //20ターン経ったらイベントマス消滅
 	}
 	if (Event_Log[e][0] == turn) {
 		event_timer = turn;
@@ -304,7 +307,7 @@ function BdrawWalk(t,A,x,y) {
 /* 戦闘描画関数 */
 function Battle() {
 	var x,y;
-	var A = AI_Log[turn][i][5];
+	var A = AI_Log[turn][i][5]; //プレイヤーiの戦った相手
 
 	if (AI_Log[turn][i][4] == 0) {
 		//何もしない
@@ -312,7 +315,7 @@ function Battle() {
 
 		drawEffect(-1);
 		battleSE.play("none", 0, 0, 0, 1, 0);
-		if(i > AI_Log[turn][i][5]){
+		if(i > A){
 			x = 39.5 + (math * AI_Log[turn+1][A][0]);
 			y = 39.5 + (math * AI_Log[turn+1][A][1]);
 			BdrawWalk(turn+1,A,x,y);
