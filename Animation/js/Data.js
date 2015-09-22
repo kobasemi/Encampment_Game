@@ -1,11 +1,13 @@
 var AI_Log; // AI情報配列Iname : Playersarray[0]
 var Event_Log; // マップイベント情報配列
 var Obst_Log; // 障害物情報配列
+var Playersarray;
 
 function LoadJson() {
 	var data = document.location.search.substring(1);
 	alert(data);
-	var Playersarray = data.split("/");
+	data = data.replace("+","");
+	Playersarray = data.split("/");
 	alert(Playersarray[0]);
 
 	var Players = data.split("/").length - 1;

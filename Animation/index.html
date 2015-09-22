@@ -17,7 +17,25 @@
 <script src="js/effect.js"></script>
 <script src="js/Animation.js"></script>
 <script src="js/Data.js"></script>
+
+<script>
+Logstf = new Array();
+var Logstr = "";
+var z=0;
+
+function LogMessage(message){
+	var scroll = document.getElementById( "anime_log" );
+	Logstf[z] = "Turn"+turn+": "+message+"\n---\n";
+	Logstr += Logstf[z];
+	z++;
+	document.auto.automes.value = Logstr;
+	scroll.scrollTop = z*100;
+}
+</script>
 <script> LoadJson(); </script>
+
+
+
 </head>
 
 <body onload="LoadBGM();">
@@ -28,6 +46,12 @@
 		<input type="button" id="btn" value="等速" onclick="Speed1();">
 		<input type="button" id="btn" value="倍速" onclick="Speed2();">
 	</div>
+	
+	<form name="auto">
+	<textarea id="anime_log" name="automes" rows="50" cols="40" wrap="physical">
+	</textarea>
+	</form>
+	
 	<canvas id="BackGround" width="593" height="593"></canvas>
 	<canvas id="Color_Field" width="593" height="593"></canvas>
 	<canvas id="Event_Field" width="593" height="593"></canvas>

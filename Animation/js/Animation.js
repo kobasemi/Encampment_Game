@@ -48,14 +48,13 @@ function soundComplete() {
 	mutekiSE = Sound.createInstance("muteki");
 	warpSE = Sound.createInstance("warp");
 	bgmMusic = Sound.createInstance("bgm");
-	
+
 	drawBackGround();
 	start();
 }
 
 /* 背景の描画関数 */
 function drawBackGround() {
-	
 	var cnvs = document.getElementById("BackGround");
 	var ctx = cnvs.getContext("2d");
 	var img = new Image();
@@ -106,6 +105,7 @@ function initialize2(){
 		drawColorField(); //色の描画
 	}
 	bgmMusic.play("none", 0, 0, -1, 0.3, 0);
+	LogMessage("試合開始");
 	drawEvent();
 	turn = 1;
 	drawAnimation();
@@ -150,7 +150,7 @@ function BdrawColorField(A) {
 function drawAnimation() {
 	GameOver = 0;
 	var timer = setInterval(function() {
-		
+
 		if(turn <= 501){
 			drawEvent(); //イベントマス描画
 			MutekiClear(); //無敵になって20ターン経ったAIを元に戻す
@@ -162,19 +162,22 @@ function drawAnimation() {
 			}
 		}
 		turn++;
-		
+
 		if(GameOver == 1){ //Replayの処理
 			clearInterval(timer);
 			turn = 0;
 			bgmMusic.stop();
-			colx.clearRect(0, 0, 593, 593); 
-			evex.clearRect(0, 0, 593, 593); 
+			colx.clearRect(0, 0, 593, 593);
+			evex.clearRect(0, 0, 593, 593);
 			obsx.clearRect(0, 0, 593, 593);
 			stage.removeAllChildren();
 			stage.update();
 			event_timer=0;
+			document.auto.automes.value = "";
+			Logstr = "";
+			Logstf = [];
 		}
-		
+
 		if(GameOver == 2){ //一時停止の処理
 			clearInterval(timer);
 			drawAnimation();
@@ -199,10 +202,13 @@ function drawEvent() {
 		var eimg = new Image();
 		if(Event_Log[e][1] == 1){
 			eimg.src = "img/landmine.png"; //地雷マス画像
+			LogMessage("X:"+Event_Log[e][2]+"Y:"+Event_Log[e][3]+"に地雷出現");
 		}else if(Event_Log[e][1] == 2){
 			eimg.src = "img/warp.png"; //ワープマス画像
+			LogMessage("X:"+Event_Log[e][2]+"Y:"+Event_Log[e][3]+"にワープマス出現");
 		}else if(Event_Log[e][1] == 3){
 			eimg.src = "img/muteki.png"; //無敵マス画像
+			LogMessage("X:"+Event_Log[e][2]+"Y:"+Event_Log[e][3]+"に無敵マス出現");
 		}
 		var x = 39.5 + (math * Event_Log[e][2])-13.6;
 		var y = 39.5 + (math * Event_Log[e][3])-13.6;
@@ -253,13 +259,14 @@ function eventArise() {
 		var y = AI[i].y - (math * 3.5);
 		colx.clearRect(x, y, 182, 182); //周囲三マスの色を消去
 		evex.clearRect(x, y, 182, 182); //イベントマスを消去
+		LogMessage(Playersarray[i] +"が地雷を踏んでしまった！");
 
 	} else if (AI_Log[turn][i][3] == 2) { //ワープを踏んだ時の処理
 		drawEffect(3);
 		warpSE.play("none", 0, 0, 0, 1, 0);
 		AI[i].x = 39.5 + (math * AI_Log[turn][i][0]);
 		AI[i].y = 39.5 + (math * AI_Log[turn][i][1]);
-
+		LogMessage(Playersarray[i] +"はX:"+AI_Log[turn][i][0]+"Y:"+AI_Log[turn][i][1]+"にワープした");
 	} else if (AI_Log[turn][i][3] == 3) { //無敵を踏んだ時の処理
 		var x = AI[i].x - (math * 3.5);
 		var y = AI[i].y - (math * 3.5);
@@ -270,6 +277,7 @@ function eventArise() {
 		AI[i].graphics.drawPolyStar(0, 0, 11, 5, 0.6, -90);
 		MutekiMan[0] = i;
 		MutekiMan[1] = turn;
+		LogMessage(Playersarray[i] +"は無敵になった");
 	}
 }
 
@@ -325,6 +333,7 @@ function Battle() {
 			BdrawWalk(turn,A,x,y);
 		}
 		BdrawColorField(i);
+		LogMessage(Playersarray[i] +"が"+Playersarray[AI_Log[turn][i][5]]+"を撃破！");
 
 	} else if (AI_Log[turn][i][4] == 2) { //戦闘に負けたときの処理
 		drawEffect(0);
@@ -333,6 +342,7 @@ function Battle() {
 		AI[i].y = 39.5 + (math * AI_Log[turn][i][1]);
 		//BdrawWalk(i,x,y);
 		BdrawColorField(A);
+		LogMessage(Playersarray[AI_Log[turn][i][5]]+"が"+Playersarray[i]+"を撃破！");
 	}
 }
 

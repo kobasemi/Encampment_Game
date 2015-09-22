@@ -4,6 +4,7 @@ html,body{
     background-color: #010000;
 }
 
+
 div.box {
 	width:200px; height:400px;
 	margin:5px; padding:30px;
@@ -15,33 +16,33 @@ div.box {
 } 
 
 #BackGround {
-	position: absolute; top: 0px; left: 0px; z-index: 0;
-	top: 50%; left: 50%;
+	position: absolute; z-index: 0;
+	top: 50%; left: 48.5%;
 	border:1px solid black;
 	margin-top: -290px; margin-left: -330px;
 }
 #Color_Field {
-	position: absolute; top: 0px; left: 0px; z-index: 1;
-	top: 50%; left: 50%;
+	position: absolute; z-index: 1;
+	top: 50%; left: 48.5%;
 	border:1px solid black;
 	margin-top: -290px; margin-left: -330px;
 }
 #Event_Field {
-	position: absolute; top: 0px; left: 0px; z-index: 2;
-	top: 50%; left: 50%;
+	position: absolute; z-index: 2;
+	top: 50%; left: 48.5%;
 	border:1px solid black;
 	margin-top: -290px; margin-left: -330px;
 }
 #AI_Field {
-	position: absolute; top: 0px; left: 0px; z-index: 4;
-	top: 50%; left: 50%;
+	position: absolute; z-index: 4;
+	top: 50%; left: 48.5%;
 	border:1px solid black;
 	margin-top: -290px; margin-left: -330px;
 }
 
 #Obst_Field {
 	position: absolute; top: 0px; left: 0px; z-index: 3;
-	top: 50%; left: 50%;
+	top: 50%; left: 48.5%;
 	border:1px solid black;
 	margin-top: -290px; margin-left: -330px;
 }
@@ -69,7 +70,7 @@ div.box {
 	line-height: 100px;
 	text-align: center;
 	top: 50%; left: 50%;
-	margin-top: -50px; margin-left: -125px;
+	margin-top: -50px; margin-left: -150px;
 	z-index:6;
 }
 
@@ -82,11 +83,25 @@ div.box {
 }
 
 div.replay {
-	position: absolute; top: 75%; left:5%;
+	position: absolute; top: 75%; left:4%;
 }
 
 div.speed {
-	position: absolute; top: 85%; left:5%;
+	position: absolute; top: 85%; left:4%;
+}
+
+#anime_log {
+  position: absolute;
+  overflow:auto;
+  overflow-y:scroll;
+  width: 310px;
+  height: 588px;
+  background-color: #DDD;
+  border: 3px solid #EEE;
+  color: #111;
+  margin-top: -289px;
+  top: 50%; left:74%;
+  font-size: 14px;
 }
 
   
