@@ -103,10 +103,11 @@ public class Main extends Applet implements Runnable {
 
 	int turn = 0;
 	boolean game_finish = false;
+	boolean event_on=false;
 
 	String event = "";
 	
-	int data_AI[][][]=new int[TURN+2][4][6];
+	int data_AI[][][]=new int[TURN+2][4][7];
 	int data_event[][]=new int[TURN+2][4];
 	int data_obstacle[][]=new int[100][2];
 
@@ -169,18 +170,15 @@ public class Main extends Applet implements Runnable {
 
 	// 初期化
 	public void init() {
-		player_num=3;//debug
+		player_num=2;//debug
 		// ////内部のクラスであれば以下のような処理はいらないが、外部jarからAIを読み込む必要があるため、若干複雑な処理が必要//////
 		try {
 			urls[0] = new URL(
-					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/AI_stalker.jar");// AIのクラスが入っているjarファイルの位置指定
+					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/osumi.jar");// AIのクラスが入っているjarファイルの位置指定
 			urls[1] = new URL(
 					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/test_AI_B.jar");// AIのクラスが入っているjarファイルの位置指定
-			urls[2] = new URL(
-					"file:/Users/koba/Documents/workspace/zintori_proto2/hoge/test_AI_A.jar");// AIのクラスが入っているjarファイルの位置指定
-			AI_name[1] = "AI_stalker.AI_stalker";// パッケージ名.クラス名
-			AI_name[2] = "test_AI_B.Player_B";// パッケージ名.クラス名
-			AI_name[3] = "test_AI_A.Player_A";// パッケージ名.クラス名
+			AI_name[1] = "osumi.AI_class";// パッケージ名.クラス名
+			AI_name[2] = "test_AI_B.AI_class";// パッケージ名.クラス名
 			
 			ClassLoader parent = ClassLoader.getSystemClassLoader();// クラスローダ作成
 			URLClassLoader urlClassLoader = new URLClassLoader(urls, parent);// 外部jarを読み込むためのＵＲＬクラスローダ作成
@@ -253,9 +251,13 @@ public class Main extends Applet implements Runnable {
 							event_count++;
 						}
 						if(player_status[i]==MATCHLESS&&event_count>=20){
-							create_event();
+							event_on=true;
 							player_status[i]=NO;
 						}
+					}
+					if(event_on==true){
+						event_on=false;
+						create_event();
 					}
 					
 					for (int i = 1; i < player_num + 1; i++) {
@@ -384,14 +386,20 @@ public class Main extends Applet implements Runnable {
 	}
 
 	void change_map() {// マップ更新
-		for (int i = 0; i < player_color_num.length; i++) {
-			player_color_num[i] = 0;
+		for (int i = 0; i < object_map.length; i++) {
+			for (int j = 0; j < object_map[i].length; j++) {
+				if (object_map[i][j] > 0) {
+					object_map[i][j]=0;
+				}
+			}
 		}
+		
 		for (int i = 1; i < player_num + 1; i++) {
+			player_color_num[i] = 0;
 			color_map[player_x[i]][player_y[i]] = i;
-	
 			object_map[player_x[i]][player_y[i]] = i;
 		}
+		
 
 		for (int i = 0; i < color_map.length; i++) {
 			for (int j = 0; j < color_map[i].length; j++) {
@@ -401,7 +409,6 @@ public class Main extends Applet implements Runnable {
 			}
 		}
 	}
-
 	void give_data(int ID) {// IDのplayerにデータを与える
 		try {
 			set_object_map[ID].invoke(myPlayer[ID], object_map);
@@ -622,24 +629,24 @@ public class Main extends Applet implements Runnable {
 		event_x = rnd.nextInt(GRID_X);
 		event_y = rnd.nextInt(GRID_Y);
 		event_type = rnd.nextInt(3) + 1;
-		event_born=turn;
+		event_born=turn+1;
 	}
 
 	void event_check(int ID) {
 		if (player_x[ID] == event_x && player_y[ID] == event_y) {
 			if (event_type == LANDMINE) {
 				color_explode(event_x,event_y,NO_COLOR);
-				warp(ID);
-				create_event();
+				player_status[ID]=LANDMINE;
+			event_on=true;
 			} else if (event_type == WARP) {
+				player_status[ID]=WARP;
 				warp(ID);
-				create_event();
+				event_on=true;
 			} else if (event_type == MATCHLESS) {
 				event_count=0;
 				player_status[ID]=MATCHLESS;
 				event_x=-1;
 				event_y=-1;
-				
 			}
 			
 		}
@@ -649,15 +656,31 @@ public class Main extends Applet implements Runnable {
 		object_map[player_x[ID]][player_y[ID]] = 0;
 		player_x[ID] = rnd.nextInt(GRID_X);
 		player_y[ID] = rnd.nextInt(GRID_Y);
+		while(object_map[player_x[ID]][player_y[ID]]!=0){
+			player_x[ID] = rnd.nextInt(GRID_X);
+			player_y[ID] = rnd.nextInt(GRID_Y);
+		}
 		object_map[player_x[ID]][player_y[ID]] = ID;
 	}
 
 	void clear() {
 		create_event();
-		player_x[1] = 1;
-		player_y[1] = 1;
-		player_x[2] = 18;
-		player_y[2] = 13;
+		int check=0;
+		player_x[1] = rnd.nextInt(GRID_X);
+		player_y[1] = rnd.nextInt(GRID_Y);
+		for (int i = 2; i < player_num + 1; i++) {
+			check=0;
+			while(check==0){
+				check=0;
+				player_x[i] = rnd.nextInt(GRID_X);
+				player_y[i] = rnd.nextInt(GRID_Y);
+				for (int j = 1; j < i; j++) {
+					if(1>=Math.abs(player_x[i]-player_x[j])+Math.abs(player_y[i]-player_y[j])){
+						check++;
+					}
+				}
+			}
+		}
 		for (int i = 1; i < player_num + 1; i++) {
 			player_first_x[i]=player_x[i];
 			player_first_y[i]=player_y[i];
@@ -689,6 +712,7 @@ public class Main extends Applet implements Runnable {
 		}else{
 			data_AI[turn][ID-1][5]=player_rival[ID]-1;
 		}
+		data_AI[turn][ID-1][6]=player_color_num[ID];
 		player_battle[ID]=NO;
 	}
 	
@@ -709,7 +733,7 @@ public class Main extends Applet implements Runnable {
 	void write_AI_JSON() {
 		System.out.println("終了");
 		Gson gson = new Gson();
-
+/*
 		try (
 			JsonWriter writer = new JsonWriter(new BufferedWriter(new FileWriter("/Users/koba/Documents/workspace/zintori_proto2/hoge/AI.json")))) {     
 			    gson.toJson(new JsonPrimitive(gson.toJson(data_AI)), writer);
@@ -733,7 +757,7 @@ public class Main extends Applet implements Runnable {
 				} catch (IOException ex) {
 				    ex.printStackTrace();
 				}
-		
+		*/
 		System.out.println("終了");
 	 
 	}

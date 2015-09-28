@@ -114,8 +114,8 @@ import com.google.gson.stream.JsonWriter;
 		private int[] obstacle_x = new int[OBSTACLE_NUM];//障害物のx
 		private int[] obstacle_y = new int[OBSTACLE_NUM];//障害物のy
 
-		int turn = 0;
 		boolean game_finish = false;
+		boolean event_on=false;
 
 		String event = "";
 		
@@ -270,12 +270,13 @@ import com.google.gson.stream.JsonWriter;
 
 			clear();
 			for (int i = 1; i < player_num + 1; i++) {
-				save_AI(turn,i);
+				save_AI(0,i);
 			}
-			save_event(turn);
+			save_event(0);
 			//ゲームを開始する
 			for(int i=0;i<TURN;i++){
 				game_play(i);
+				
 			}
 			save_obstacle();
 			
@@ -293,9 +294,13 @@ import com.google.gson.stream.JsonWriter;
 					event_count++;
 				}
 				if(player_status[i]==MATCHLESS&&event_count>=20){
-					create_event();
+					event_on=true;
 					player_status[i]=NO;
 				}
+			}
+			if(event_on==true){
+				event_on=false;
+				create_event(turn+1);
 			}
 			for (int i = 1; i < player_num + 1; i++) {
 				
@@ -588,8 +593,9 @@ import com.google.gson.stream.JsonWriter;
 				}
 			}
 		}
+		
 
-		void create_event() {
+		void create_event(int turn) {
 			event_x = rnd.nextInt(GRID_X);
 			event_y = rnd.nextInt(GRID_Y);
 			event_type = rnd.nextInt(3) + 1;
@@ -601,11 +607,11 @@ import com.google.gson.stream.JsonWriter;
 				if (event_type == LANDMINE) {
 					color_explode(event_x,event_y,NO_COLOR);
 					player_status[ID]=LANDMINE;
-					create_event();
+				event_on=true;
 				} else if (event_type == WARP) {
 					player_status[ID]=WARP;
 					warp(ID);
-					create_event();
+					event_on=true;
 				} else if (event_type == MATCHLESS) {
 					event_count=0;
 					player_status[ID]=MATCHLESS;
@@ -618,6 +624,8 @@ import com.google.gson.stream.JsonWriter;
 
 		void warp(int ID) {
 			object_map[player_x[ID]][player_y[ID]] = 0;
+			player_x[ID] = rnd.nextInt(GRID_X);
+			player_y[ID] = rnd.nextInt(GRID_Y);
 			while(object_map[player_x[ID]][player_y[ID]]!=0){
 				player_x[ID] = rnd.nextInt(GRID_X);
 				player_y[ID] = rnd.nextInt(GRID_Y);
@@ -626,7 +634,8 @@ import com.google.gson.stream.JsonWriter;
 		}
 
 		void clear() {
-			create_event();
+			event_on=false;
+			create_event(0);
 			int check=0;
 			player_x[1] = rnd.nextInt(GRID_X);
 			player_y[1] = rnd.nextInt(GRID_Y);
@@ -637,17 +646,27 @@ import com.google.gson.stream.JsonWriter;
 					player_x[i] = rnd.nextInt(GRID_X);
 					player_y[i] = rnd.nextInt(GRID_Y);
 					for (int j = 1; j < i; j++) {
-						if(1>=Math.abs(player_x[i]-player_x[j])+Math.abs(player_y[i]-player_y[j])){
+						if(1<=Math.abs(player_x[i]-player_x[j])+Math.abs(player_y[i]-player_y[j])){
 							check++;
 						}
 					}
 				}
 			}
+			for (int i = 0; i < color_map.length; i++) {
+				for (int j = 0; j < color_map[i].length; j++) {
+					if(color_map[i][j]>=0){
+						color_map[i][j]=0;
+					}
+				}
+			}
+			
 			for (int i = 1; i < player_num + 1; i++) {
 				player_first_x[i]=player_x[i];
 				player_first_y[i]=player_y[i];
 				player_way[i] = 0;
+				player_status[i]=NO;
 				player_color_num[i] = 0;
+				player_battle[i]=NO;
 			}
 			for (int i = 0; i < OBSTACLE_NUM; i++) {
 				obstacle_x[i]=-1;
@@ -673,6 +692,7 @@ import com.google.gson.stream.JsonWriter;
 			}else{
 				json.data_AI[turn][ID-1][5]=player_rival[ID]-1;
 			}
+			json.data_AI[turn][ID-1][6]=player_color_num[ID];
 			player_battle[ID]=NO;
 		}
 		

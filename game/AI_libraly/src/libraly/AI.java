@@ -32,7 +32,7 @@ public class   AI {
 		public final int MATCHLESS=3;//無敵
 		
 		//変数
-		public int player_num = 2;
+		public int player_num = 10;
 		public int[] player_x=new int[player_num+1]; //位置x
 		public int[] player_y=new int[player_num+1]; //位置y
 		public int[] player_color_num=new int[player_num+1]; //゙塗りつぶしたマスの数
@@ -59,8 +59,8 @@ public class   AI {
 	**(例)自分がプレイヤー2でプレイヤー数が4の場合は
 	**PLAYER=2
 	**ENEMY[0]=1
-	**ENEMY[2]=3
-	**ENEMY[3]=4
+	**ENEMY[1]=3
+	**ENEMY[2]=4
 	**カラーも同様
 	*/
 	public void set_info(int ID,int enemy_num){
@@ -137,6 +137,8 @@ public class   AI {
 	**actionの処理終了時のplayer_way[PLAYER]の値によって
 	**次にプレイヤーが移動する方向を決定する
 	*/
+	
+	//ランダム処理
 	public void action(){
 		int walk_ran =UP;
 		walk_ran=rnd.nextInt(4)+1;
@@ -159,10 +161,225 @@ public class   AI {
 		}
 	}
 	
-	public void right(){
-		player_way[PLAYER]=RIGHT;
+	//その場
+	public void stay() {
+		player_way[PLAYER] = UNDER;
 	}
 
+	//右
+	public void right() {
+		player_way[PLAYER] = RIGHT;
+	}
+	
+	//左
+	public void left() {
+		player_way[PLAYER] = LEFT;
+	}
+	
+	//上
+	public void up() {
+		player_way[PLAYER] = UP;
+	}
+	
+	//下
+	public void down() {
+		player_way[PLAYER] = DOWN;
+	}
+	
+	//相手に向かって進む
+	public void approach(int ID) {
+		
+		//初期化
+		player_way[PLAYER] = UNDER;
+		
+		//x
+		if(player_x[PLAYER] > player_x[ID]) {
+			if(Math.abs((player_x[ID]+GRID_X)-player_x[PLAYER]) >= Math.abs(player_x[ID]-player_x[PLAYER])){
+				player_way[PLAYER] = LEFT;
+			} else {
+				player_way[PLAYER] = RIGHT;
+			}
+		} else if(player_x[PLAYER] < player_x[ID]) {
+			if(Math.abs(player_x[ID]-player_x[PLAYER]) > Math.abs((player_x[ID]-GRID_X)-player_x[PLAYER])) {
+				player_way[PLAYER] = LEFT;
+			}else{
+				player_way[PLAYER] = RIGHT;
+			}
+		} else { }
+		
+		//y
+		if(player_way[PLAYER] == UNDER) {
+			if(player_y[PLAYER] >= player_y[ID]) {
+				if(Math.abs(player_y[ID]-player_y[PLAYER]) > Math.abs((player_y[ID]+GRID_Y)-player_y[PLAYER])) {
+					player_way[PLAYER] = DOWN;
+				} else {
+					player_way[PLAYER] = UP;
+				}
+			} else {
+				if(Math.abs((player_y[ID]-GRID_Y)-player_y[PLAYER]) >= Math.abs(player_x[ID]-player_x[PLAYER])) {
+					player_way[PLAYER] = DOWN;
+				} else {
+					player_way[PLAYER] = UP;
+				}
+			}
+		} else { }
+	}
+		
+	
+	//相手から逃げる
+	public void escape(int ID) {
+		
+		//初期化
+		player_way[PLAYER] = UNDER;
+		
+		//x
+		if(player_x[PLAYER] > player_x[ID]) {
+			if(Math.abs((player_x[ID]+GRID_X)-player_x[PLAYER]) < Math.abs(player_x[ID]-player_x[PLAYER])) {
+				player_way[PLAYER] = LEFT;
+			} else {
+				player_way[PLAYER] = RIGHT;
+			}
+		} else if(player_x[PLAYER] < player_x[ID]) {
+			if(Math.abs(player_x[ID]-player_x[PLAYER]) < Math.abs((player_x[ID]-GRID_X)-player_x[PLAYER])) {
+				player_way[PLAYER] = LEFT;
+			}else{
+				player_way[PLAYER] = RIGHT;
+			}
+		} else { }
+		
+		//y
+		if(player_way[PLAYER] == UNDER) {
+			if(player_y[PLAYER] >= player_y[ID]) {
+				if(Math.abs(player_y[ID]-player_y[PLAYER]) < Math.abs((player_y[ID]+GRID_Y)-player_y[PLAYER])) {
+					player_way[PLAYER] = DOWN;
+				} else if(Math.abs(player_y[ID]-player_y[PLAYER]) > Math.abs((player_y[ID]+GRID_Y)-player_y[PLAYER])) {
+					player_way[PLAYER] = UP;
+				}
+			} else {
+				if(Math.abs((player_y[ID]-GRID_Y)-player_y[PLAYER]) < Math.abs(player_x[ID]-player_x[PLAYER])) {
+					player_way[PLAYER] = DOWN;
+				} else if(Math.abs((player_y[ID]-GRID_Y)-player_y[PLAYER]) > Math.abs(player_x[ID]-player_x[PLAYER])) {
+					player_way[PLAYER] = UP;
+				}
+			}
+		} else { }
+	}
+
+	//イベントに向かう
+	public void getmatchless() {
+			
+		//初期化
+		player_way[PLAYER] = UNDER;
+		
+		//x
+		if(player_x[PLAYER] > event_x) {
+			if(Math.abs((event_x+GRID_X)-player_x[PLAYER]) >= Math.abs(event_x-player_x[PLAYER])){
+				player_way[PLAYER] = LEFT;
+			} else {
+				player_way[PLAYER] = RIGHT;
+			}
+		} else if(player_x[PLAYER] < event_x) {
+			if(Math.abs(event_x-player_x[PLAYER]) > Math.abs((event_x-GRID_X)-player_x[PLAYER])) {
+				player_way[PLAYER] = LEFT;
+			}else{
+				player_way[PLAYER] = RIGHT;
+			}
+		} else { }
+		
+		//y
+		if(player_way[PLAYER] == UNDER) {
+			if(player_y[PLAYER] >= event_y) {
+				if(Math.abs(event_y-player_y[PLAYER]) > Math.abs((event_y+GRID_Y)-player_y[PLAYER])) {
+					player_way[PLAYER] = DOWN;
+				} else {
+					player_way[PLAYER] = UP;
+				}
+			} else {
+				if(Math.abs((event_y-GRID_Y)-player_y[PLAYER]) >= Math.abs(event_y-player_x[PLAYER])) {
+					player_way[PLAYER] = DOWN;
+				} else {
+					player_way[PLAYER] = UP;
+				}
+			}
+		} else { }
+	}
+	
+	//指定位置に向かう
+		public void to(int x,int y) {
+				
+			//初期化
+			player_way[PLAYER] = UNDER;
+			
+			//x
+			if(player_x[PLAYER] > x) {
+				if(Math.abs((x+GRID_X)-player_x[PLAYER]) >= Math.abs(x-player_x[PLAYER])){
+					player_way[PLAYER] = LEFT;
+				} else {
+					player_way[PLAYER] = RIGHT;
+				}
+			} else if(player_x[PLAYER] < x) {
+				if(Math.abs(x-player_x[PLAYER]) > Math.abs((x-GRID_X)-player_x[PLAYER])) {
+					player_way[PLAYER] = LEFT;
+				}else{
+					player_way[PLAYER] = RIGHT;
+				}
+			} else { }
+			
+			//y
+			if(player_way[PLAYER] == UNDER) {
+				if(player_y[PLAYER] >= y) {
+					if(Math.abs(y-player_y[PLAYER]) > Math.abs((y+GRID_Y)-player_y[PLAYER])) {
+						player_way[PLAYER] = DOWN;
+					} else {
+						player_way[PLAYER] = UP;
+					}
+				} else {
+					if(Math.abs((y-GRID_Y)-player_y[PLAYER]) >= Math.abs(y-player_x[PLAYER])) {
+						player_way[PLAYER] = DOWN;
+					} else {
+						player_way[PLAYER] = UP;
+					}
+				}
+			} else { }
+		}
+		
+		//敵との距離を算出
+		public int distance(int ID) {
+			
+			//初期化
+			int dis=0;
+			//x
+			if(player_x[PLAYER] > player_x[ID]) {
+				if(Math.abs((player_x[ID]+GRID_X)-player_x[PLAYER]) >= Math.abs(player_x[ID]-player_x[PLAYER])){
+					dis= Math.abs(player_x[PLAYER]-player_x[ID]);
+				} else {
+					dis=Math.abs((player_x[ID]+GRID_X)-player_x[PLAYER]);
+				}
+			} else if(player_x[PLAYER] < player_x[ID]) {
+				if(Math.abs(player_x[ID]-player_x[PLAYER]) > Math.abs((player_x[ID]-GRID_X)-player_x[PLAYER])) {
+					dis=Math.abs((player_x[ID]-GRID_X)-player_x[PLAYER]);
+				}else{
+					dis=Math.abs(player_x[ID]-player_x[PLAYER]);
+				}
+			} else { }
+			
+			//y
+				if(player_y[PLAYER] >= player_y[ID]) {
+					if(Math.abs(player_y[ID]-player_y[PLAYER]) > Math.abs((player_y[ID]+GRID_Y)-player_y[PLAYER])) {
+						dis=dis+Math.abs((player_y[ID]+GRID_Y)-player_y[PLAYER]);
+					} else {
+						dis=dis+Math.abs(player_y[ID]-player_y[PLAYER]);
+					}
+				} else {
+					if(Math.abs((player_y[ID]-GRID_Y)-player_y[PLAYER]) >= Math.abs(player_x[ID]-player_x[PLAYER])) {
+						dis=dis+Math.abs(player_x[ID]-player_x[PLAYER]);
+					} else {
+						dis=dis+Math.abs((player_y[ID]-GRID_Y)-player_y[PLAYER]);
+					}
+				}
+				return dis;
+		}
+		
+		
+		
 }
-
-
