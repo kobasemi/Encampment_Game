@@ -64,6 +64,9 @@ escape(ID):このターン動かす方向を指定した敵の逆方向に設定
 getmatchless():このターン動かす方向をイベントの方向に設定するためのメソッド
 to(x,y):このターン動かす方向を指定した位置の方向に設定するためのメソッド(引数は座標xと座標y)
 distance(ID):指定した敵との距離(x+y)を算出しint型で返すメソッド(引数は敵ID→ENEMY[hoge])
+neighbor_object(way):指定した方向のオブジェクトID(敵ID(ENEMY[hoge])や障害物(-1)など)をint型で返すメソッド．端にいる場合は反対側の端の情報を返す(引数は方向→UP)
+neighbor_color(way):指定した方向の色データ(PLAYERやENEMY[hoge])をint型で返すメソッド．端にいる場合は反対側の端の情報を返す(引数は方向→UP)
+
 
 
 
