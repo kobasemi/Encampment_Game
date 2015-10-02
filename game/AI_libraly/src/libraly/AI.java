@@ -380,6 +380,64 @@ public class   AI {
 				return dis;
 		}
 		
+		int neighbor_color(int way) {// 方向を引数に渡せばその方向の色情報を返す
+			if(way==UP){
+				if (player_y[PLAYER] != 0) {
+					return color_map[player_x[PLAYER]][player_y[PLAYER] - 1];
+				} else {
+					return color_map[player_x[PLAYER]][GRID_Y - 1];
+				}
+			}else if(way==RIGHT){
+				if (player_x[PLAYER] != GRID_X - 1) {
+					return color_map[player_x[PLAYER] + 1][player_y[PLAYER]];
+				} else {
+					return color_map[0][player_y[PLAYER]];
+				}
+			}else if(way==DOWN){
+				if (player_y[PLAYER] != GRID_Y - 1) {
+					return color_map[player_x[PLAYER]][player_y[PLAYER] + 1];
+				} else {
+					return color_map[player_x[PLAYER]][0];
+				}
+			}else if(way==LEFT){
+				if (player_x[PLAYER] != 0) {
+					return color_map[player_x[PLAYER] - 1][player_y[PLAYER]];
+				} else {
+					return color_map[GRID_X - 1][player_y[PLAYER]];
+				}
+			}
+			return 0;
+		}
+		
+		int neighbor_object(int way) {// 方向を引数に渡せばその方向の色情報を返す
+			if(way==UP){
+				if (player_y[PLAYER] != 0) {
+					return object_map[player_x[PLAYER]][player_y[PLAYER] - 1];
+				} else {
+					return object_map[player_x[PLAYER]][GRID_Y - 1];
+				}
+			}else if(way==RIGHT){
+				if (player_x[PLAYER] != GRID_X - 1) {
+					return object_map[player_x[PLAYER] + 1][player_y[PLAYER]];
+				} else {
+					return object_map[0][player_y[PLAYER]];
+				}
+			}else if(way==DOWN){
+				if (player_y[PLAYER] != GRID_Y - 1) {
+					return object_map[player_x[PLAYER]][player_y[PLAYER] + 1];
+				} else {
+					return object_map[player_x[PLAYER]][0];
+				}
+			}else if(way==LEFT){
+				if (player_x[PLAYER] != 0) {
+					return object_map[player_x[PLAYER] - 1][player_y[PLAYER]];
+				} else {
+					return object_map[GRID_X - 1][player_y[PLAYER]];
+				}
+			}
+			return 0;
+		}
+		
 		
 		
 }
