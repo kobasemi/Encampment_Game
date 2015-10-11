@@ -1,0 +1,541 @@
+@charset "utf-8";
+
+/*EGBA Title Font copyright:Alba Matter http://ja.fonts2u.com/alba-matter.%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88
+*/
+
+
+@font-face { 
+    font-family:"ALBA";
+   src:url("ALBAM___.TTF")  format("truetype"),
+   url("ALBAM___.woff")  format("woff"),
+   url("ALBAM___.svg") format("svg"),
+   url("ALBAM___.eot") format('embedded-opentype');
+
+}
+
+.rankingbox{
+text-align:center;
+clear:both;
+}
+
+.uploadbox{
+text-align:center;
+clear:left;
+}
+
+.dlbox{
+
+    clear:left;
+    
+
+}
+
+
+
+#container{display:none;}
+
+#loading{
+    position:absolute;
+    left:50%;
+    top:20%;
+    margin-left:-30px;
+
+}
+
+.header2{
+    height:55px;
+    width:100%;
+}
+
+
+/*
+.content{
+    background-image:url(./picture/haikei.jpg);
+     max-width: auto;
+     height: auto;
+     
+}
+*/
+.usrbox{
+    float:right;
+    width:70%;
+}
+.EGBAbox{
+    float:left;
+    width:30%;
+    height:55px;
+}
+
+.EGBAbox img{
+    height:55px:
+    width:55px;
+
+}
+
+.EGBAbox a{
+    height:55px:
+    width:55px;
+
+}
+
+
+
+.fight{
+clear:left;
+height:100%;
+width:900px;
+margin-right: auto;
+margin-left : auto;
+background-color:#000000;
+background: rgba(0, 0, 0, 0.8); 
+
+}
+
+
+
+.textbox{
+    margin:30px
+    width:900px;
+    margin: 0 auto;  
+}
+
+.textcontent{
+    padding:100px;
+    
+}
+.textcontent h2{
+    text-align:center;
+}
+
+.textcontent p{
+    color: #717171;
+}
+
+
+.EGBAbox p{
+    text-align:center;
+    font-size:55px;
+    display:inline;
+    font-family:"ALBA";
+   
+}
+
+.helpmoji{
+    clear:left;
+}
+
+.helpmoji p{
+    font-size:20px;
+}
+
+
+.WelcomeTitle{
+    
+    font-size:180px;
+    font-family:"ALBA";
+    text-align:center;
+    color:#9370DB;
+}
+
+.multiform{
+
+    font-size:80px;
+    text-align:center;
+    clear: left; 
+    color:#110CD2;
+
+}
+
+.specifyform{
+    font-size:60px;
+    text-align:center;
+    clear: left;
+    color:#110CD2;
+}
+
+.centerconer{
+
+      text-align:center;
+
+}
+
+.centerAI{
+    text-align:center;
+    clear: left;
+   }
+
+p.mainAI{
+     color:#110CD2;
+     font-size:30px;
+}
+
+p.subAI{
+
+  font-size:20px;
+
+}
+
+
+button.upbutton {
+    margin-left:5px;
+    font-size: 40px;
+    font-weight: bold;
+    height:55px;
+    background-color: #248;
+    color: #fff;
+    border-style: none;
+}
+
+
+button.upbutton:hover {
+    background-color: #24d;
+    color: #fff;
+}
+
+body.body1{  
+    background-image: url(./picture/login.jpg);
+    background-repeat: no-repeat;
+    background-size:100%;
+    
+}
+body.body2{
+    background-image: url(./picture/1.jpg);
+    background-repeat: no-repeat;
+    background-size:100%;
+}
+body.body3{
+    background-image: url(./picture/2.jpg);
+    background-repeat: no-repeat;
+    background-size:100%;
+}
+
+body.body4{
+
+   /*This Picture License http://free-texture.net/about 
+     http://free-texture.net/about*/
+
+    background-image: url(./picture/haikei.jpg);
+    background-repeat: repeat;
+    background-size:100%;
+    
+}
+
+body.body5{
+  
+    background-image: url(./picture/haikei.jpg);
+    background-repeat: repeat;
+    background-size:100%;
+
+}
+
+
+body.body6{
+ /*This Picture License https://www.behance.net/gallery/14281631/Download-Free-Blurred-Backgrounds by Asif Aleem
+  */
+    background-image: url(./picture/starthaikei.jpg);
+    background-repeat: repeat;
+    background-size:100%;
+
+}
+
+
+
+
+
+h1{
+    text-shadow: 0px 3px 0px #b2a98f,
+    0px 14px 10px rgba(0,0,0,0.15),
+    0px 24px 2px rgba(0,0,0,0.1),
+    0px 34px 30px rgba(0,0,0,0.1);
+}
+
+
+p.white{
+    
+    color: #ffffff;
+    text-shadow: 2px 2px 3px rgba(255,255,255,0.1);
+    
+}
+
+
+form.form1 {
+    text-align:center;
+    background-color:#f4f4f4f4;
+    background-color: rgba(51,51,51,0.6);
+    margin-left: 33%;
+    margin-right: 33%;
+    margin-top: 15%;
+    border-radius: 20px; 
+    color: #fff;
+    opacity: 0.8;
+    clear:left;
+
+}
+
+
+form.form2{
+    text-align:center;
+     background-color:#f4f4f4f4;
+     background-color: rgba(51,51,51,0.6);
+     margin-left: 33%;
+     margin-right: 33%;
+     margin-top: 8%;
+     border-radius: 20px;
+     color: #fff;
+     opacity: 0.8;
+     clear:left;
+}
+
+
+input.btn {
+    background: -moz-linear-gradient(top,#09C 0%,#09C 50%,#069 50%,#069);
+    background: -webkit-gradient(linear, left top, left bottom,from(#09C), color-stop(0.5,#09C), color-stop(0.5,#069),  to(#069));
+    border: 1px solid #DDD;
+    color: #FFF;
+    width: 75px;
+    padding: 10px 0;
+}
+
+
+button.aisample {
+    margin-left:5px;
+    float: right ;
+    font-size: 40px;
+    font-weight: bold;
+    height:55px;
+    background-color:#FF0000;
+    color: #fff;
+    border-style: none;
+}
+
+
+button.aisample:hover {
+    background-color: #FF4500;
+    color: #fff;
+}
+
+
+button.ranking {
+    margin-left:5px;
+    float: right ;
+    font-size: 40px;
+    font-weight: bold;
+    height:55px;
+    background-color:#0000CD;
+    color: #fff;
+    border-style: none;
+}
+
+
+button.ranking:hover {
+    background-color: #0000FF;
+    color: #fff;
+}
+button.upload {
+    margin-left:5px;
+    float: right ;
+    font-size: 40px;
+    font-weight: bold;
+    height:55px;
+    background-color:#00FF00;
+    color: #fff;
+    border-style: none;
+}
+
+
+button.upload:hover {
+    background-color: #00FF7F;
+    color: #fff;
+}
+
+
+button.signin {
+    margin-left:5px;
+    float: right ;
+    font-size: 40px;
+    font-weight: bold;
+    height:55px;
+    background-color: #248;
+    color: #fff;
+    border-style: none;
+}
+
+
+button.signin:hover {
+    background-color: #24d;
+    color: #fff;
+}
+
+
+button.signup {
+    margin-left:5px;
+    float: right ;
+    font-weight: bold;
+    height:55px;
+    font-size: 40px;
+    background-color:#B40404;
+    color: #fff;
+    border-style: none;
+}
+
+button.signup:hover {
+    background-color: #FF3300;
+    color: #fff;
+}
+button.help {
+    margin-left:5px;
+    float: right ;
+    font-weight: bold;
+    height:55px;
+    width:150px;
+    font-size: 40px;
+    background-color:#FFD700;
+    color: #fff;
+    border-style: none;
+}
+
+button.help:hover {
+    background-color: #FFFF00;
+    color: #fff;
+}
+
+/*
+button.fightin picture num(vs1-4) are public common.
+URL:http://free-illustrations.gatag.net/2015/03/25/070000.html
+by DeltaWorks
+URL:http://free-illustrations.gatag.net/2013/11/28/050000.html
+by Larisa Koshkina
+URL:http://free-illustrations.gatag.net/2013/11/28/070000.html
+by geralt
+URL:http://free-illustrations.gatag.net/2015/03/01/150000.html
+by Pezibear
+*/
+
+button.fightin1 {
+    margin-top:10px;
+    margin-bottom:10px;
+    margin-left:110px;
+    margin-right:110px;   
+    float: right ;
+    font-weight: bold;
+    height:230px;
+    width:230px;
+    font-size: 40px;
+    color: #fff;
+    border-style: none;
+    background-image:url(./picture/vs1.jpg);
+
+}
+
+button.fightin1:hover {
+    opacity:0.8;
+    filter:alpha(opacity=80);
+    -ms-filter:aalpha opacity=8);
+}
+button.fightin2 {
+    margin-top:10px;
+    margin-bottom:10px;
+    margin-left:110px;
+    margin-right:110px;
+    float: right ;
+    font-weight: bold;
+    height:230px;
+    width:230px;
+    font-size: 40px;
+    color: #fff;
+    border-style: none;
+    background-image:url(./picture/vs2.jpg);
+}
+
+button.fightin2:hover {
+    opacity:0.8;
+    filter:alpha(opacity=80);
+    -ms-filter:alpha( opacity=8);
+}
+button.fightin3 {
+    margin-top:10px;
+    margin-bottom:10px;
+    margin-left:110px;
+    margin-right:110px;
+    float: right ;
+    font-weight: bold;
+    height:230px;
+    width:230px;
+    font-size: 40px;
+    color: #fff;
+    border-style: none;
+    background-image:url(./picture/vs3.jpg);
+
+}
+
+button.fightin3:hover {
+    opacity:0.8;
+    filter:alpha(opacity=80);
+    -ms-filter:alpha(opacity=8);
+}
+button.fightin4 {
+    margin-top:10px;
+    margin-bottom:10px;
+    margin-left:110px;
+    margin-right:110px;
+    float: right ;
+    font-weight: bold;
+    height:230px;
+    width:230px;
+    font-size: 40px;
+    color: #fff;
+    border-style: none;
+    background-image:url(./picture/vs4.jpg);
+
+}
+
+button.fightin4:hover {
+    opacity:0.8;
+    filter:alpha(opacity=80);
+    -ms-filter:alpha(opacity=8);
+}
+
+button.AIbt {
+    margin-left:5px;
+    float: right ;
+    font-weight: bold;
+    height:55px;
+    font-size: 40px;
+    background-color:#4169E1;
+    color: #fff;
+    border-style: none;
+}
+
+button.AIbt:hover {
+    background-color:#40E0D0;
+    color: #fff;
+}
+
+
+
+button.logout {
+    margin-left:5px;
+    float: right ;
+    font-weight: bold;
+    height:55px;
+    font-size: 40px;
+    background-color:#32CD32;
+    color: #fff;
+    border-style: none;
+}
+
+button.logout:hover {
+    background-color: #ADFF2F;
+    color: #fff;
+}
+
+
+
+input:focus {
+        border-color: #C9C9C9;
+	-webkit-box-shadow: 0px 0px 6px rgba(255,15,135,.7);
+	-moz-box-shadow: 0px 0px 6px rgba(255,15,135,.7);
+	box-shadow: 0px 0px 6px rgba(255,15,135,.7);
+}
+
+
