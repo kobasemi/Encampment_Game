@@ -1,5 +1,3 @@
-var GameOver = 0; //
-var speed = 200; //drawAnimationのsetIntervalの早さ
 
 /*アニメのスタート画面*/
 function start(){
@@ -40,19 +38,3 @@ function restart(){
 		});
 }
 
-/*Replayボタンが押された時の処理*/
-function AnimeReplay(){
-	GameOver = 1;
-	restart();
-}
-
-/*通常速度*/
-function Speed1(){
-	speed = 200;
-	GameOver = 2;
-}
-/*倍速*/
-function Speed2(){
-	speed = 100;
-	GameOver = 2;
-}

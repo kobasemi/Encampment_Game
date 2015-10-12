@@ -5,29 +5,33 @@ var Playersarray;
 
 function LoadJson() {
 	var data = document.location.search.substring(1);
-	alert(data);
 	data = data.replace("+","");
 	Playersarray = data.split("/");
-	alert(Playersarray[0]);
 
 	var Players = data.split("/").length - 1;
-	alert(Players);
 
 	document.write("<div class=box>");
-
 	for (var i = 0; i < Players + 1; i++) {
-		document.write("<p>" + (i + 1) + ":    " + Playersarray[i] + "</p>");
+		document.write("<font color=" + AI_color[i] + "><p>" + (i + 1) + ":    " + Playersarray[i] + "</p></font>");
 	}
-	
-	alert(Playersarray[0]);
-	alert(Playersarray[1]);
-	
 	document.write("</div>");
+	
+	
+	document.write("<div class=box2 id=math_num>");
+	for (var i = 0; i < Players + 1; i++) {
+		document.write("<p>0</p>");
+	}
+	document.write("</div>");
+	
+	
+	
+	AI_num = Players+1;
+	
 
 	$(function() {
 		$.ajax({
 			type : "POST",
-			url : "http://10.1.4.166/zintori_ver2/",
+			url : "http://www.egba.top/zintori_ver2/",
 			data : {
 				AIname : Playersarray
 			},
