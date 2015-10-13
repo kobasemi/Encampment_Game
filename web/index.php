@@ -21,7 +21,7 @@
 <button class="signin" formaction="./login.php" type="submit" name="Sign-up" value="Sign-in">Sign-in</button>
 <button class="signup" formaction="./register.php" type="submit" name="Sign-in" value="Sign-up">Sign-up</button>
 <button class="help" formaction="./help.php" type="submit" name="help" value="help">HELP</button>
-<button class="aisample" formaction="./download.php" type="submit" name="ai" value="up">Sample</button>
+<button class="aisample" formaction="./licence.php" type="submit" name="ai" value="up">README</button>
 
 </form>
 

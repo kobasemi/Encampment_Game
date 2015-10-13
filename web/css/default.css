@@ -10,7 +10,7 @@
    url("ALBAM___.woff")  format("woff"),
    url("ALBAM___.svg") format("svg"),
    url("ALBAM___.eot") format('embedded-opentype');
-
+133.242.225.99
 }
 
 .rankingbox{
@@ -58,11 +58,11 @@ clear:left;
 */
 .usrbox{
     float:right;
-    width:70%;
+    width:80%;
 }
 .EGBAbox{
     float:left;
-    width:30%;
+    width:20%;
     height:55px;
 }
 

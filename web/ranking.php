@@ -45,7 +45,7 @@ echo "
 <button class=\"logout\" formaction=\"./logout.php\" type=\"submit\" name=\"Log-out\">Log-out</button>                                                   
 <button class=\"help\" formaction=\"./help.php\" type=\"submit\" name=\"help\">HELP</button>                                                             
 <button class=\"ranking\" formaction=\"./ranking.php\" type=\"submit\" name=\"Log-out\">Ranking</button>                                                 
-<button class=\"aisample\" formaction=\"./download.php\" type=\"submit\" name=\"help\">Sample</button>                                                   
+<button class=\"aisample\" formaction=\"./licence.php\" type=\"submit\" name=\"help\">README</button>                                                   
 <button class=\"upload\" formaction=\"./AI.php\" type=\"submit\" name=\"upload\">UPLOAD</button>                                                         
 </form>                                                                                                                                                  
                                                                                                                                                          

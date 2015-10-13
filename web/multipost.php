@@ -1,6 +1,6 @@
 <?php
 session_start();
-xcyif(empty($_SESSION['username'])||empty($_SESSION['lastdate'])){
+if(empty($_SESSION['username'])||empty($_SESSION['lastdate'])){
   header("Location: ./login.php");
 }
 

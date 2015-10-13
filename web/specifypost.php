@@ -16,7 +16,7 @@ $searchusername = $_POST["user"];
   $mynum = 0;
 
 
-  $result = $mysqli->query("SELECT num FROM all_users where username=\"$searchusername\"");
+  $result = $mysqli->query("SELECT num FROM all_users where username=\"".$searchusername."\"");
  
 
 
@@ -26,7 +26,7 @@ $aaaaa = null;
   } 
   
  
-if($aaaaa==NULL){
+if($aaaaa===NULL){
   
   $battleusers="USER NOT FOUND";
   
@@ -43,11 +43,17 @@ echo "</script>";
   $battleusers=$battleusers."/".$searchusername;
   $_SERVER['battleusers']=$battleusers;
   echo "<script type=\"text/javascript\">";
-echo "if (window.confirm(\"BattleUSER SET $battleusers\")) {
-location.href = \"index.html\";
+
+  /*echo "window.alert(\"BattleUSER SET $users\")";*/
+
+echo "if(window.confirm(\"BattleUSER SET $battleusers\")) {                         
+            location.href = \"../anime/index.php?+$battleusers\";                                
+          
 }";
 
 echo "</script>";
+echo "</html>";
+
 
 
 

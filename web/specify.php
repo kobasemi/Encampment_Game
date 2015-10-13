@@ -1,7 +1,5 @@
 <?php
 session_start();
-
-
 if(empty($_SESSION['username'])||empty($_SESSION['lastdate'])){
   header("Location: ./login.php");
 }
@@ -28,20 +26,22 @@ if($_SESSION['username']==NULL||$_SESSION['lastdate']==NULL){
 <div class="header">
 <div class="EGBAbox">
 
-<img src="./css/picture/scammer2.jpg" alt="EGBA.picture" width="48px" height="48px">
+<a href="fight.php"><img src="./css/picture/scammer2.jpg" alt="EGBA.picture" width="48px" height="48px" border="0"></a>
 <p>EGBA</p>
 </div>
 
 <form>
-<button class="logout" formaction="./logout.php" type="submit" name="Log-out" value="Log-out">Log-out</button>
-<button class="help" formaction="./help.php" type="submit" name="help"
- value="help">HELP</button>
+<button class="logout" formaction="./logout.php" type="submit" name="Log-out">Log-out</button>
+<button class="help" formaction="./help.php" type="submit" name="help">HELP</button>
+<button class="ranking" formaction="./ranking.php" type="submit" name="Log-out">Ranking</button>
+<button class="aisample" formaction="./licence.php" type="submit" name="help">README</button>
+<button class="upload" formaction="./AI.php" type="submit" name="upload">UPLOAD</button>
 </form>
 
 </div>
 
 
-<p class="specifyform">対戦相手のNAMEを記入してください</p>
+<p class="specifyform">対戦相手のUSERNAMEを記入してください</p>
 
 <div class="centerconer">
 
@@ -51,6 +51,7 @@ if($_SESSION['username']==NULL||$_SESSION['lastdate']==NULL){
 </form>
 
 </div>
+
 
 </body>
 </html>

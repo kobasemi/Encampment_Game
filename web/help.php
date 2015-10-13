@@ -36,13 +36,23 @@ if($_SESSION['username']==NULL||$_SESSION['lastdate']==NULL){
 <button class="logout" formaction="./logout.php" type="submit" name="Log-out">Log-out</button>
 <button class="help" formaction="./help.php" type="submit" name="help">HELP</button>
 <button class="ranking" formaction="./ranking.php" type="submit" name="Log-out">Ranking</button>
-<button class="aisample" formaction="./download.php" type="submit" name="help">Sample</button>
+<button class="aisample" formaction="./licence.php" type="submit" name="help">README</button>
 <button class="upload" formaction="./AI.php" type="submit" name="upload">UPLOAD</button>
 </form>
 
 
 </div>
 <div class="helpmoji">
+
+</br></br>
+
+<h1>サンプルダウンロード</h1>
+<p>sample.txt <a href="/Download/sample.txt">ダウンロード</a></p>
+ <p>sample.txt <a href="/user/a1/a1.jar">ダウンロード</a></p>
+<p>zip <a href="/Download/html.zip">ダウンロード</a></p>
+
+
+
 <h1>ルール概要</h1>
   <p>AI はあらかじめ用意されたグリッド(大きさ未定)にランダムに配置され、決められたターン数(500 ターン)自由に動き回ることが出来る</p><p>AI が通った跡は AI の色に塗りつぶ されていく。最終的に、最も多くのマスを自分の色に塗りつぶした AI の勝利となる。</p>
 <h1>戦闘</h1>

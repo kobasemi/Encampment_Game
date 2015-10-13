@@ -8,15 +8,18 @@ if($password == "" || $username == "") {
 
  array_push($error, "form blank");
 } else {
- 
- 
+  
  require_once('cfg.php');
+
+
 
  $mysqli = new mysqli($db['host'], $db['user'], $db['pass'],
 $db['dbname']);
  
  $mysqli->set_charset("utf-8");
  if ($mysqli->connect_error) {
+   echo "DB error";
+
  die('Connect Error (' . $mysqli->connect_errno . ') '
  . $mysqli->connect_error);
  }
