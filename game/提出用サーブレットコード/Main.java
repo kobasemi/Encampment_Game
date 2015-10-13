@@ -1,3 +1,7 @@
+//パスワード情報などを「****」に変換しているためこのコードはこのままでは動作しません
+
+
+
 package zintori_ver2;
 
 import java.io.IOException;
@@ -162,7 +166,7 @@ public class Main extends HttpServlet {
 
 		// json書き込み////
 		response.setContentType("application/json; charset=utf-8");
-		response.setHeader("Access-Control-Allow-Origin", "http://10.1.4.166"); // ここは個人のサーバ環境によって異なる．
+		response.setHeader("Access-Control-Allow-Origin", "****"); ．
 		PrintWriter out_json = response.getWriter();
 		out_json.println(JSON.encode(json));
 		out_json.close();
@@ -174,18 +178,18 @@ public class Main extends HttpServlet {
 			Class.forName("com.mysql.jdbc.Driver");
 
 			con = DriverManager.getConnection(
-					"jdbc:mysql://127.0.0.1/all_tables", "root", "asdf4jkl;8");
+					"****", "****", "****");
 
 			java.sql.Statement stmt = con.createStatement();
 			String sql;
 			ResultSet rs = null;
 			for (int i = 0; i < player_num; i++) {
-				sql = "SELECT score FROM all_users where username='"
+				sql = "SELECT **** FROM **** where ****='"
 						+ ai_name[i] + "'";
 				rs = stmt.executeQuery(sql);
 				// テーブル照会結果を取得
 				while (rs.next()) {
-					player_score[i + 1] = rs.getInt("score");
+					player_score[i + 1] = rs.getInt("****");
 				}
 			}
 
@@ -214,8 +218,8 @@ public class Main extends HttpServlet {
 				} else if (player_score[i + 1] >= 9999) {
 					player_score[i + 1] = 9999;
 				}
-				sql = "UPDATE all_users SET score=" + player_score[i + 1]
-						+ " where username='" + ai_name[i] + "'";
+				sql = "UPDATE **** SET ****=" + player_score[i + 1]
+						+ " where ****='" + ai_name[i] + "'";
 				stmt.executeUpdate(sql);
 			}
 
@@ -308,8 +312,7 @@ public class Main extends HttpServlet {
 		try {
 
 			for (int i = 1; i < player_num + 1; i++) {
-				urls[i - 1] = new URL("file:/var/www/html/user/" + ai[i - 1]
-						+ "/" + ai[i - 1] + ".jar");// AIのクラスが入っているjarファイルの位置指定
+				urls[i - 1] = new URL("****.jar");// AIのクラスが入っているjarファイルの位置指定
 				AI_name[i] = ai[i - 1] + ".AI_class";// パッケージ名.クラス名
 			}
 
