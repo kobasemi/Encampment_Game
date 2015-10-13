@@ -69,12 +69,12 @@ public class AI_class extends AI{
 	}
 	
 	@Override
-	public void action(){
+	public void action(){//このメソッド内にAIの処理を書き込んでください．新たにメソッドを追加することは可能です．
 		
+		/* (例)ランダムに上下左右に動くAI
 		Random rand = new Random();
 		int random=rand.nextInt(4)+1;
 		
-		//ランダムに上下左右に動くAI
 		if(random==UP){//randomの値がUP(1)の時
 			up();//上に進む
 		}else if(random==RIGHT){//randomの値がRIGHT(2)の時
@@ -85,7 +85,8 @@ public class AI_class extends AI{
 			left();//左に進む
 		}else{
 			stay();//その場にとどまる
-		}
+		}*/
+		
 		
 	}
 	   
