@@ -1,5 +1,7 @@
 package default_AI;
 
+import java.util.Random;
+
 import libraly.AI;
 
 public class AI_class extends AI{
@@ -61,24 +63,32 @@ public class AI_class extends AI{
 		neighbor_color(way):指定した方向の色データ(PLAYERやENEMY[hoge])をint型で返すメソッド．端にいる場合は反対側の端の情報を返す(引数は方向→UP)
 
 */
-
-
-public AI_class() {
 	
-}
-
-@Override
-public void action(){
-	int random=rnd.nextInt(4)+1;
-	if(random==UP){
-		right();
+	public AI_class() {
+		
 	}
 	
-	
-	
-}
-
+	@Override
+	public void action(){
+		
+		Random rand = new Random();
+		int random=rand.nextInt(4)+1;
+		
+		//ランダムに上下左右に動くAI
+		if(random==UP){//randomの値がUP(1)の時
+			up();//上に進む
+		}else if(random==RIGHT){//randomの値がRIGHT(2)の時
+			right();//右に進む
+		}else if(random==DOWN){//randomの値がDOWN(3)の時
+			down();//下に進む
+		}else if(random==LEFT){//randomの値がLEFT(4)の時
+			left();//左に進む
+		}else{
+			stay();//その場にとどまる
+		}
+		
+	}
 	   
-	}
+}
 
 
